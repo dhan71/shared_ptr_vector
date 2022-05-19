@@ -62,14 +62,43 @@ class Tests : public CppUnit::TestFixture
 public:
   void setUp()
   {
-    cout << "Tests::setUp called" << endl;
+    //cout << "Tests::setUp called" << endl;
   }
   void tearDown()
   {
-    cout << "Tests::tearDown called" << endl;
+    //cout << "Tests::tearDown called" << endl;
   }
 
 public:
+  void test_x1()
+  {
+    shared_ptr<int> sp1(nullptr);
+    CPPUNIT_ASSERT(nullptr == sp1.get());
+  }
+  void test_x2()
+  {
+    int* i1 = new int(1);
+    // pointer double use is an error
+    return;
+    shared_ptr<int> sp1(i1);
+    shared_ptr<int> sp2(i1);
+    CPPUNIT_ASSERT(i1 == sp1.get());
+    CPPUNIT_ASSERT(i1 == sp2.get());
+  }
+  void test_x3()
+  {
+    int* i1 = new int(1);
+    shared_ptr<int> sp1(i1);
+    shared_ptr<int> sp2(sp1);
+    CPPUNIT_ASSERT(i1 == sp1.get());
+    CPPUNIT_ASSERT(i1 == sp2.get());
+
+    TObj* t1 = new TObj(2, "TObj double use");
+    shared_ptr<TObj> sp3(t1);
+    shared_ptr<TObj> sp4(sp3);
+    CPPUNIT_ASSERT(t1 == sp3.get());
+    CPPUNIT_ASSERT(t1 == sp4.get());
+  }
   void test_ctor1()
   {
     cout << "Tests::test_ctor1 called" << endl;
@@ -82,10 +111,42 @@ public:
   {
     cout << "Tests::test_ctor2 called" << endl;
     shared_ptr_vector<int> v1;
-    //CPPUNIT_ASSERT_EQUAL(0, v1.size());
     CPPUNIT_ASSERT(0 == v1.size());
     CPPUNIT_ASSERT_EQUAL(true, v1.empty());
+    shared_ptr_vector<int> v2(v1);
+    //CPPUNIT_ASSERT_EQUAL(0, v1.size());
+    CPPUNIT_ASSERT(0 == v2.size());
+    CPPUNIT_ASSERT_EQUAL(true, v2.empty());
   }
+  void test_ctor3()
+  {
+    cout << "Tests::test_ctor3 called" << endl;
+    shared_ptr_vector<int> v1(3);
+    CPPUNIT_ASSERT(3 == v1.size());
+    CPPUNIT_ASSERT_EQUAL(false, v1.empty());
+    CPPUNIT_ASSERT(nullptr == v1.front().get());
+    CPPUNIT_ASSERT(nullptr == v1.back().get());
+  }
+  void test_ctor4()
+  {
+    cout << "Tests::test_ctor4 called" << endl;
+    int* i1 = new int(1);
+    shared_ptr_vector<int> v1(3, i1);
+    cout << "v1=" << v1 << endl;
+    CPPUNIT_ASSERT(3 == v1.size());
+    CPPUNIT_ASSERT_EQUAL(false, v1.empty());
+    CPPUNIT_ASSERT(i1 == v1.front().get());
+    CPPUNIT_ASSERT(i1 == v1.back().get());
+
+    TObj* t1 = new TObj(3, "Three");
+    shared_ptr_vector<TObj> v2(3, t1);
+    cout << "v2=" << v2 << endl;
+    CPPUNIT_ASSERT(3 == v2.size());
+    CPPUNIT_ASSERT_EQUAL(false, v2.empty());
+    CPPUNIT_ASSERT(t1 == v2.front().get());
+    CPPUNIT_ASSERT(t1 == v2.back().get());
+  }
+
   void test_push1()
   {
     shared_ptr_vector<int> v1;
@@ -170,8 +231,13 @@ public:
   {
     CppUnit::TestSuite* s = new CppUnit::TestSuite(" Test Test ");
 
+    s->addTest(new CppUnit::TestCaller<Tests>("test_x1", &Tests::test_x1));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_x2", &Tests::test_x2));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_x3", &Tests::test_x3));
     s->addTest(new CppUnit::TestCaller<Tests>("test_ctor1", &Tests::test_ctor1));
     s->addTest(new CppUnit::TestCaller<Tests>("test_ctor2", &Tests::test_ctor2));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_ctor3", &Tests::test_ctor3));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_ctor4", &Tests::test_ctor4));
     s->addTest(new CppUnit::TestCaller<Tests>("test_push1", &Tests::test_push1));
     s->addTest(new CppUnit::TestCaller<Tests>("test_push2", &Tests::test_push2));
     s->addTest(new CppUnit::TestCaller<Tests>("test_pop1", &Tests::test_pop1));

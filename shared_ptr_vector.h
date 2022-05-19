@@ -72,7 +72,7 @@ public:
    */
   shared_ptr_vector()
   { }
-#if 0
+
   /**
    *  @brief  Creates a shared_ptr_vector with no elements.
    *  @param  __a  An allocator object.
@@ -104,11 +104,12 @@ public:
    *
    *  This constructor fills the shared_ptr_vector with @a __n copies of @a __value.
    */
-  shared_ptr_vector(size_type __n, const value_type& __value, const allocator_type& __a = allocator_type())
-  : iList(__n, __value, __a)
+//shared_ptr_vector(size_type __n, const value_type& __value, const allocator_type& __a = allocator_type())
+  shared_ptr_vector(size_type __n, const data_type& __value, const allocator_type& __a = allocator_type())
+  : iList(__n, shared_value_type(__value), __a)
   {
   }
-
+#if 0
   /**
    *  @brief  shared_ptr_vector copy constructor.
    *  @param  __x  A shared_ptr_vector of identical element and allocator types.

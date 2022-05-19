@@ -30,6 +30,10 @@ VPATH    = .
 exe : ut
 
 all : exe
+clean:
+	/bin/rm -f *o
+	/bin/rm -f ut
+
 
 ut : ut.o
 	$(CCC) $(LDOPTIONS) -o $@ $? $(LDFLAGS)
