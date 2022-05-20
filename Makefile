@@ -5,7 +5,7 @@
 CCC = g++
 CXX = g++
 LD  = g++
-COPTIONS = -std=c++17 -fPIC -g -Wall -Wextra
+CCOPTIONS = -std=c++17 -fPIC -g -Wall -Wextra
 LDOPTIONS = -g -m64
 SLOPTOINS = -shared -g -m64
 

@@ -41,27 +41,34 @@ template<typename _Tp>
 class shared_ptr_vector
 {
 public:
-  typedef std::vector<std::shared_ptr<_Tp> > _base_type;
+  typedef std::vector<std::shared_ptr<_Tp> > _list_type;
 
-  typedef _Tp       value_type;
-  typedef _Tp*      data_type;
-  typedef const _Tp* const_data_type;
-  typedef std::shared_ptr<_Tp> shared_value_type;
+  typedef _Tp                  value_type;
+  typedef _Tp*                 data_type;
+  typedef const _Tp*           const_data_type;
+  typedef std::shared_ptr<_Tp> shared_data_type;
 
-  typedef typename _base_type::pointer pointer;
-  typedef typename _base_type::const_pointer const_pointer;
-  typedef typename _base_type::reference reference;
-  typedef typename _base_type::const_reference const_reference;
-  typedef typename _base_type::iterator iterator;
-  typedef typename _base_type::const_iterator const_iterator;
-  typedef typename _base_type::reverse_iterator reverse_iterator;
-  typedef typename _base_type::const_reverse_iterator const_reverse_iterator;
+  typedef typename _list_type::pointer                pointer;
+  typedef typename _list_type::const_pointer          const_pointer;
+  typedef typename _list_type::reference              reference;
+  typedef typename _list_type::const_reference        const_reference;
+  typedef typename _list_type::iterator               iterator;
+  typedef typename _list_type::const_iterator         const_iterator;
+  typedef typename _list_type::reverse_iterator       reverse_iterator;
+  typedef typename _list_type::const_reverse_iterator const_reverse_iterator;
 
-  typedef typename _base_type::size_type size_type;
-  typedef typename _base_type::difference_type difference_type;
-  typedef typename _base_type::allocator_type allocator_type;
+  typedef typename _list_type::size_type       size_type;
+  typedef typename _list_type::difference_type difference_type;
+  typedef typename _list_type::allocator_type  allocator_type;
 
   friend class Tests;
+
+#define _DEBUG_OUT
+#ifdef _DEBUG_OUT
+#define _OUT(m) std::cout << m << std::endl
+#else
+#define _OUT(m)
+#endif
 
 public:
   // [23.2.4.1] construct/copy/destroy
@@ -71,7 +78,9 @@ public:
    *  @brief  Creates a shared_ptr_vector with no elements.
    */
   shared_ptr_vector()
-  { }
+  {
+    _OUT(" + shared_ptr_vector() default ctor called");
+  }
 
   /**
    *  @brief  Creates a shared_ptr_vector with no elements.
@@ -80,7 +89,9 @@ public:
   explicit
   shared_ptr_vector(const allocator_type& __a)
   : iList(__a)
-  { }
+  {
+    _OUT(" + shared_ptr_vector(const allocator_type& __a)) ctor called");
+  }
 
   /**
    *  @brief  Creates a shared_ptr_vector with default constructed elements.
@@ -94,6 +105,7 @@ public:
   shared_ptr_vector(size_type __n, const allocator_type& __a = allocator_type())
   : iList(__n, __a)
   {
+    _OUT(" + shared_ptr_vector(size_type __n, cconst allocator_type& __a)) ctor called");
   }
 
   /**
@@ -106,10 +118,11 @@ public:
    */
 //shared_ptr_vector(size_type __n, const value_type& __value, const allocator_type& __a = allocator_type())
   shared_ptr_vector(size_type __n, const data_type& __value, const allocator_type& __a = allocator_type())
-  : iList(__n, shared_value_type(__value), __a)
+  : iList(__n, shared_data_type(__value), __a)
   {
+    _OUT(" + shared_ptr_vector(size_type __n, const data_type& __value, ccconst allocator_type& __a)) ctor called");
   }
-#if 0
+
   /**
    *  @brief  shared_ptr_vector copy constructor.
    *  @param  __x  A shared_ptr_vector of identical element and allocator types.
@@ -122,8 +135,9 @@ public:
    *  by @a __x (unless the allocator traits dictate a different object).
    */
   shared_ptr_vector(const shared_ptr_vector& __x)
-  : _iList(__x)
+  : iList(__x.iList)
   {
+    _OUT(" + shared_ptr_vector(const shared_ptr_vector& __x) ctor called");
   }
 
   /**
@@ -138,26 +152,17 @@ public:
 
   /// Copy constructor with alternative allocator
   shared_ptr_vector(const shared_ptr_vector& __x, const allocator_type& __a)
-  : _base_type(__x.size(), __a)
+  : iList(__x.List, __a)
   {
-  }
-
-private:
-  shared_ptr_vector(shared_ptr_vector&& __rv, const allocator_type& __m, true_type) noexcept
-  : _base_type(__m, std::move(__rv))
-  { }
-
-  shared_ptr_vector(shared_ptr_vector&& __rv, const allocator_type& __m, false_type)
-  : _base_type(__m)
-  {
+    _OUT(" + shared_ptr_vector(const shared_ptr_vector& __x, const allocator_type& __a)) ctor called");
   }
 
 public:
-  /// Move constructor with alternative allocator
-  shared_ptr_vector(shared_ptr_vector&& __rv, const allocator_type& __m)
-  noexcept( noexcept( shared_ptr_vector(std::declval<shared_ptr_vector&&>(), std::declval<const allocator_type&>(), std::declval<typename _Alloc_traits::is_always_equal>())) )
-  : shared_ptr_vector(std::move(__rv), __m, typename _Alloc_traits::is_always_equal{})
-  { }
+///// Move constructor with alternative allocator
+//shared_ptr_vector(shared_ptr_vector&& __rv, const allocator_type& __m)
+//noexcept( noexcept( shared_ptr_vector(std::declval<shared_ptr_vector&&>(), std::declval<const allocator_type&>(), std::declval<typename _Alloc_traits::is_always_equal>())) )
+//: shared_ptr_vector(std::move(__rv), __m, typename _Alloc_traits::is_always_equal{})
+//{ }
 
   /**
    *  @brief  Builds a shared_ptr_vector from an initializer list.
@@ -170,9 +175,16 @@ public:
    *  This will call the element type's copy constructor N times
    *  (where N is @a __l.size()) and do no memory reallocation.
    */
-  shared_ptr_vector(initializer_list<value_type> __l, const allocator_type& __a = allocator_type())
-  : _base_type(__a)
+//shared_ptr_vector(initializer_list<value_type> __l, const allocator_type& __a = allocator_type())
+  shared_ptr_vector(std::initializer_list<data_type> __l, const allocator_type& __a = allocator_type())
+  : iList(__a)
   {
+    _OUT(" + shared_ptr_vector(std::initializer_list<data_type> __l, const allocator_type& __a) ctor called");
+    iList.reserve(__l.size());
+    //for (auto i : __l)
+    //  this->push_back(i);
+    for (auto i = __l.begin(); i != __l.end(); ++i)
+      this->push_back(*i);
   }
 
   /**
@@ -195,8 +207,11 @@ public:
   shared_ptr_vector(_InputIterator __first, _InputIterator __last, const allocator_type& __a = allocator_type())
   : iList(__a)
   {
+    _OUT(" + shared_ptr_vector(_InputIterator __first, _InputIterator __last, const allocator_type& __a) ctor called");
+    iList.reserve(__last - __first);
+    for ( ; __first != __last; ++__first)
+      this->push_back(*__first);
   }
-#endif
 
   /**
    *  The dtor only erases the elements, and note that if the
@@ -206,8 +221,9 @@ public:
    */
   ~shared_ptr_vector()
   {
+    _OUT(" - ~shared_ptr_vector() dtor called");
   }
-#if 0
+
 public:
   /**
    *  @brief  shared_ptr_vector assignment operator.
@@ -221,6 +237,7 @@ public:
   shared_ptr_vector&
   operator=(const shared_ptr_vector& __x)
   {
+    _OUT(" + operator=(const shared_ptr_vector& __x) called");
     iList = __x.iList;
     return *this;
   }
@@ -236,8 +253,9 @@ public:
    *  Whether the allocator is moved depends on the allocator traits.
    */
   shared_ptr_vector&
-  operator=(shared_ptr_vector&& __x) noexcept(_Alloc_traits::_S_nothrow_move())
+  operator=(shared_ptr_vector&& __x) //noexcept(_list_type::_Alloc_traits::_S_nothrow_move())
   {
+    _OUT(" + operator=(const shared_ptr_vector&& __x) noexcept called");
     iList = __x.iList;
     return *this;
   }
@@ -254,9 +272,14 @@ public:
    *  of elements assigned.
    */
   shared_ptr_vector&
-  operator=(initializer_list<value_type> __l)
+  operator=(std::initializer_list<data_type> __l)
   {
-    iList = __l.iList;
+    _OUT(" + operator=(std::initializer_list<data_type> __l) called");
+    iList.reserve(__l.size());
+    //for (auto i : __l)
+    //  this->push_back(i);
+    for (auto i = __l.begin(); i != __l.end(); ++i)
+      this->push_back(*i);
     return *this;
   }
 
@@ -271,9 +294,10 @@ public:
    *  the number of elements assigned.
    */
   void
-  assign(size_type __n, const value_type& __val)
+  assign(size_type __n, const data_type& __val)
   {
-    iList.assign(__n, __val);
+    _OUT(" * assign(size_type __n, const data_type& __val) called");
+    iList.assign(__n, shared_data_type(__val));
   }
 
   /**
@@ -292,7 +316,9 @@ public:
   void
   assign(_InputIterator __first, _InputIterator __last)
   {
-    iList.assign(__first, __last);
+    _OUT(" * assign(_InputIterator __first, _InputIterator __last) called");
+    for ( ; __first != __last; ++__first)
+      this->push_back(*__first);
   }
 
   /**
@@ -307,12 +333,13 @@ public:
    *  of elements assigned.
    */
   void
-  assign(initializer_list<value_type> __l)
+  assign(std::initializer_list<data_type> __l)
   {
-    iList.assign(__l);
+    _OUT(" * assign(std::initializer_list<data_type> __l) called");
+    this->assign(__l.begin(), __l.end());
   }
 
-
+public:
   // iterators
   /**
    *  Returns a read/write iterator that points to the first
@@ -445,7 +472,7 @@ public:
   {
     return iList.crend();
   }
-#endif
+
   // [23.2.4.2] capacity
   /**  Returns the number of elements in the shared_ptr_vector.  */
   size_type
@@ -453,7 +480,8 @@ public:
   {
     return iList.size();
   }
-#if 0
+
+public:
   /**  Returns the size() of the largest possible shared_ptr_vector.  */
   size_type
   max_size() const
@@ -473,6 +501,7 @@ public:
   void
   resize(size_type __new_size)
   {
+    _OUT(" * resize(size_type __new_size) called");
     iList.resize(__new_size);
   }
 
@@ -488,9 +517,10 @@ public:
    *  given data.
    */
   void
-  resize(size_type __new_size, const value_type& __x)
+  resize(size_type __new_size, const data_type& __x)
   {
-    iList.resize(__new_size, __x);
+    _OUT(" * resize(size_type __new_size, const value_type& __x) called");
+    iList.resize(__new_size, shared_data_type(__x));
   }
 
   /**  A non-binding request to reduce capacity() to size().  */
@@ -509,7 +539,7 @@ public:
   {
     return iList.capacity();
   }
-#endif
+
   /**
    *  Returns true if the shared_ptr_vector is empty.  (Thus begin() would
    *  equal end().)
@@ -519,7 +549,7 @@ public:
   {
     return iList.empty();
   }
-#if 0
+
   /**
    *  @brief  Attempt to preallocate enough memory for specified number of
    *          elements.
@@ -543,6 +573,7 @@ public:
     iList.reserve(__n);
   }
 
+public:
   // element access
   /**
    *  @brief  Subscript access to the data contained in the shared_ptr_vector.
@@ -578,7 +609,6 @@ public:
     return iList[__n];
   }
 
-#endif
 public:
   /**
    *  @brief  Provides access to the data contained in the shared_ptr_vector.
@@ -594,6 +624,12 @@ public:
   reference
   at(size_type __n)
   {
+    return iList.at(__n);
+  }
+  reference
+  at(size_type __n, const data_type& __x)
+  {
+    iList.at(__n) = shared_data_type(__x);
     return iList.at(__n);
   }
 
@@ -661,18 +697,19 @@ public:
    *   Returns a pointer such that [data(), data() + size()) is a valid
    *   range.  For a non-empty shared_ptr_vector, data() == &front().
    */
-  _Tp*
-  data()
-  {
-    return iList.data();
-  }
+//_Tp*
+//data()
+//{
+//  return iList.data();
+//}
 
-  const _Tp*
-  data() const
-  {
-    return iList.data();
-  }
+//const _Tp*
+//data() const
+//{
+//  return iList.data();
+//}
 
+public:
   // [23.2.4.3] modifiers
   /**
    *  @brief  Add data to the end of the shared_ptr_vector.
@@ -687,29 +724,31 @@ public:
   void
   push_back(const data_type& __x)
   {
-    iList.push_back(shared_value_type(__x));
+    iList.push_back(shared_data_type(__x));
   }
 
   void
   push_back(data_type&& __x)
   {
-    iList.push_back(shared_value_type(__x));
+    iList.push_back(shared_data_type(__x));
   }
 
-  template <typename raw_type>
+  // my utility function for value_type
   void
-  push_back(const raw_type& __x)
+  push_back(const value_type& __x)
   {
-    iList.push_back(shared_value_type( new raw_type(__x) ));
+    iList.push_back(shared_data_type( new value_type(__x) ));
   }
-#if 0
-  template<typename... _Args>
+
+/*template<typename... _Args>
   reference
   emplace_back(_Args&&... __args)
   {
-    return iList.emplace_back(__args...);
-  }
-#endif
+//  return iList.emplace_back(__args...);
+    data_type __x = new data_type(__args...);
+    this->push_back(__x);
+  }*/
+
   /**
    *  @brief  Removes last element.
    *
@@ -912,10 +951,11 @@ public:
   { iList.clear(); }
 #endif
 private:
-  _base_type iList;
+  _list_type iList;
 };
 
 #if __cpp_deduction_guides >= 201606
+/*
 template<typename _InputIterator, typename _ValT
  = typename iterator_traits<_InputIterator>::value_type,
    typename _Allocator = allocator<_ValT>,
@@ -923,6 +963,7 @@ template<typename _InputIterator, typename _ValT
    typename = _RequireAllocator<_Allocator>>
 shared_ptr_vector(_InputIterator, _InputIterator, _Allocator = _Allocator())
   -> shared_ptr_vector<_ValT, _Allocator>;
+*/
 #endif
 
 #if 0
