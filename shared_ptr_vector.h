@@ -37,11 +37,11 @@
 #include <iostream>
 
 
-template<typename _Tp>
+template<typename _Tp, typename _Alloc = std::allocator<std::shared_ptr<_Tp> > >
 class shared_ptr_vector
 {
 public:
-  typedef std::vector<std::shared_ptr<_Tp> > _list_type;
+  typedef std::vector<std::shared_ptr<_Tp>, _Alloc> _list_type;
 
   typedef _Tp                  value_type;
   typedef _Tp*                 data_type;
@@ -890,7 +890,7 @@ public:
     }
     return begin() + d;
   }
-#if 0
+
   /**
    *  @brief  Remove element at given position.
    *  @param  __position  Iterator pointing to element to be erased.
@@ -905,11 +905,14 @@ public:
    *  the element, and that if the element is itself a pointer,
    *  the pointed-to memory is not touched in any way.  Managing
    *  the pointer is the user's responsibility.
+   *
+   *  @Note After this operation, the data at __position is deleted.
+   *        After this operation, don't use the result iterator.
    */
   iterator
   erase(const_iterator __position)
   {
-    return iList.erase __position;
+    return iList.erase(__position);
   }
 
   /**
@@ -929,11 +932,14 @@ public:
    *  the elements, and that if the elements themselves are
    *  pointers, the pointed-to memory is not touched in any way.
    *  Managing the pointer is the user's responsibility.
+   *
+   *  @Note After this operation, the data at __position is deleted.
+   *        After this operation, don't use the result iterator.
    */
   iterator
   erase(const_iterator __first, const_iterator __last)
   {
-    return iList.erase();
+    return iList.erase(__first, __last);
   }
 
   /**
@@ -962,7 +968,7 @@ public:
   void
   clear()
   { iList.clear(); }
-#endif
+
 private:
   _list_type iList;
 };
@@ -979,7 +985,6 @@ shared_ptr_vector(_InputIterator, _InputIterator, _Allocator = _Allocator())
 */
 #endif
 
-#if 0
 /**
 *  @brief  shared_ptr_vector equality comparison.
 *  @param  __x  A shared_ptr_vector.
@@ -993,7 +998,20 @@ shared_ptr_vector(_InputIterator, _InputIterator, _Allocator = _Allocator())
 template<typename _Tp, typename _Alloc>
 inline bool
 operator==(const shared_ptr_vector<_Tp, _Alloc>& __x, const shared_ptr_vector<_Tp, _Alloc>& __y)
-{ return (__x.size() == __y.size() && std::equal(__x.begin(), __x.end(), __y.begin())); }
+{
+//return (__x.size() == __y.size() && std::equal(__x.begin(), __x.end(), __y.begin()));
+  if (__x.size() != __y.size())
+    return false;
+  auto xe = __x.end();
+  auto xb = __x.begin();
+  auto yb = __y.begin();
+  for ( ; xb != xe; ++xb, ++yb)
+  {
+    if ( !(*xb->get() == *yb->get()) )
+      return false;
+  }
+  return true;
+}
 
 /**
 *  @brief  shared_ptr_vector ordering relation.
@@ -1009,7 +1027,23 @@ operator==(const shared_ptr_vector<_Tp, _Alloc>& __x, const shared_ptr_vector<_T
 template<typename _Tp, typename _Alloc>
 inline bool
 operator<(const shared_ptr_vector<_Tp, _Alloc>& __x, const shared_ptr_vector<_Tp, _Alloc>& __y)
-{ return std::lexicographical_compare(__x.begin(), __x.end(), __y.begin(), __y.end()); }
+{
+//return std::lexicographical_compare(__x.begin(), __x.end(), __y.begin(), __y.end());
+  auto xe = __x.end();
+  auto ye = __y.end();
+  auto xb = __x.begin();
+  auto yb = __y.begin();
+  for ( ; (xb != xe) && (yb != ye); ++xb, ++yb)
+  {
+    if ( (*xb->get() < *yb->get()) )
+      return true;
+  }
+  if ( (xb == xe) && (yb == ye) )
+    return false;
+  if (xb == xe) 
+    return true;
+  return false;
+}
 
 /// Based on operator==
 template<typename _Tp, typename _Alloc>
@@ -1035,6 +1069,7 @@ inline bool
 operator>=(const shared_ptr_vector<_Tp, _Alloc>& __x, const shared_ptr_vector<_Tp, _Alloc>& __y)
 { return !(__x < __y); }
 
+#if 0
 /// See std::shared_ptr_vector::swap().
 template<typename _Tp, typename _Alloc>
 inline void

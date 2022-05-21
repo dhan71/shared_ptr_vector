@@ -750,7 +750,6 @@ public:
   }
   void test_erase1()
   {
-    /*
     title("test_erase1() called");
 
     TObj* t1 = new TObj(1,"A");
@@ -761,27 +760,93 @@ public:
 
     shared_ptr_vector<TObj> v1{t1,t2,t3,t4,t5};
     cout << "v1=" << v1 << endl;
+    cout << "t1=" << t1 << endl;
+    cout << "t2=" << t2 << endl;
+    cout << "t3=" << t3 << endl;
+    cout << "t4=" << t4 << endl;
+    cout << "t5=" << t5 << endl;
 
     shared_ptr_vector<TObj>::iterator itr = v1.erase(v1.end());
-    cout << "v1=" << v1 << endl;
+    cout << "after erase end: v1=" << v1 << endl;
+    cout << "itr->get()=" << itr->get() << endl;
+    CPPUNIT_ASSERT(4 == v1.size());
 
-    itr = v1.erase(v1.end());
-    cout << "v1=" << v1 << endl;
-
+    itr = v1.erase(v1.begin());
+    cout << "after erase begin: v1=" << v1 << endl;
+    cout << "itr->get()=" << itr->get() << endl;
     CPPUNIT_ASSERT(3 == v1.size());
     CPPUNIT_ASSERT(itr == v1.begin());
-    CPPUNIT_ASSERT_EQUAL(t1, itr->get());
-    CPPUNIT_ASSERT_EQUAL(1, v1.front().get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("A"), v1.front().get()->getS());
-    CPPUNIT_ASSERT_EQUAL(1, itr->get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("A"), itr->get()->getS());
-    CPPUNIT_ASSERT_EQUAL(v1[0].get(), v1[1].get());
 
-    itr = v1.insert(v1.end(), 3, t2);
-    CPPUNIT_ASSERT(itr == (v1.begin() + 3));
-    CPPUNIT_ASSERT_EQUAL(t2, v1[4].get());
-    CPPUNIT_ASSERT_EQUAL(v1[3].get(), v1[4].get());
-    */
+    itr = v1.erase(v1.begin());
+    cout << "after erase begin: v1=" << v1 << endl;
+    cout << "itr->get()=" << itr->get() << endl;
+    CPPUNIT_ASSERT(2 == v1.size());
+    CPPUNIT_ASSERT(itr == v1.begin());
+
+    itr = v1.erase(v1.begin());
+    cout << "after erase begin: v1=" << v1 << endl;
+    cout << "itr->get()=" << itr->get() << endl;
+    CPPUNIT_ASSERT(1 == v1.size());
+    CPPUNIT_ASSERT(itr == v1.begin());
+  }
+  void test_erase2()
+  {
+    title("test_erase2() called");
+
+    TObj* t1 = new TObj(1,"A");
+    TObj* t2 = new TObj(2,"B");
+    TObj* t3 = new TObj(3,"C");
+    TObj* t4 = new TObj(4,"D");
+    TObj* t5 = new TObj(5,"E");
+
+    shared_ptr_vector<TObj> v1{t1,t2,t3,t4,t5};
+    cout << "v1=" << v1 << endl;
+    cout << "t1=" << t1 << endl;
+    cout << "t2=" << t2 << endl;
+    cout << "t3=" << t3 << endl;
+    cout << "t4=" << t4 << endl;
+    cout << "t5=" << t5 << endl;
+
+    shared_ptr_vector<TObj>::iterator itr = v1.erase(v1.end(), v1.end());
+    cout << "after erase end: v1=" << v1 << endl;
+    cout << "itr->get()=" << itr->get() << endl;
+    CPPUNIT_ASSERT(5 == v1.size());
+
+    itr = v1.erase(v1.begin(), v1.begin());
+    cout << "after erase begin: v1=" << v1 << endl;
+    cout << "itr->get()=" << itr->get() << endl;
+    CPPUNIT_ASSERT(5 == v1.size());
+
+    itr = v1.erase(v1.begin()+1, v1.end()-1);
+    cout << "after erase begin: v1=" << v1 << endl;
+    cout << "itr->get()=" << itr->get() << endl;
+    CPPUNIT_ASSERT(2 == v1.size());
+    CPPUNIT_ASSERT(itr == (v1.end()-1));
+  }
+  void test_swap()
+  {
+    title("test_swap() called");
+
+    TObj* t1 = new TObj(1,"A");
+    TObj* t2 = new TObj(2,"B");
+    TObj* t3 = new TObj(3,"C");
+    TObj* t4 = new TObj(4,"D");
+    TObj* t5 = new TObj(5,"E");
+
+    shared_ptr_vector<TObj> v1{t1,t2,t3,t4,t5};
+    cout << "v1=" << v1 << endl;
+
+    shared_ptr_vector<TObj> v2;
+
+    CPPUNIT_ASSERT(5 == v1.size());
+    CPPUNIT_ASSERT(0 == v2.size());
+
+    v1.swap(v2);
+    cout << "v1=" << v1 << endl;
+    cout << "v2=" << v2 << endl;
+
+    CPPUNIT_ASSERT(0 == v1.size());
+    CPPUNIT_ASSERT(5 == v2.size());
   }
 
   void test_pop1()
@@ -839,6 +904,94 @@ public:
     cout << "v2=" << v2 << endl;
   }
 
+  void test_eq()
+  {
+    title("test_eq() called");
+
+    vector<int> i1;
+    vector<int> i2;
+
+    shared_ptr_vector<int> v1;
+    shared_ptr_vector<int> v2;
+    CPPUNIT_ASSERT(v1 == v2);
+    CPPUNIT_ASSERT(i1 == i2);
+    CPPUNIT_ASSERT_EQUAL(i1 == i2, v1 == v2);
+
+    i1.push_back(1);
+    i1.push_back(2);
+    i1.push_back(3);
+    v1.push_back(new int(1));
+    v1.push_back(new int(2));
+    v1.push_back(new int(3));
+    cout << "v1=" << v1 << endl;
+
+    i2.push_back(1);
+    i2.push_back(2);
+    i2.push_back(3);
+    v2.push_back(new int(1));
+    v2.push_back(new int(2));
+    v2.push_back(new int(3));
+    cout << "v2=" << v2 << endl;
+
+    CPPUNIT_ASSERT(v1 == v2);
+    CPPUNIT_ASSERT_EQUAL(i1 == i2, v1 == v2);
+
+    i2.push_back(4);
+    v2.push_back(new int(4));
+    CPPUNIT_ASSERT( (v1 != v2) );
+    CPPUNIT_ASSERT( (i1 != i2) );
+    CPPUNIT_ASSERT_EQUAL(i1 != i2, v1 != v2);
+  }
+  void test_less()
+  {
+    title("test_less() called");
+
+    vector<int> i1;
+    vector<int> i2;
+
+    shared_ptr_vector<int> v1;
+    shared_ptr_vector<int> v2;
+    CPPUNIT_ASSERT( !(v1 < v2) );
+    CPPUNIT_ASSERT( !(v1 > v2) );
+    CPPUNIT_ASSERT( !(i1 < i2) );
+    CPPUNIT_ASSERT( !(i1 > i2) );
+    CPPUNIT_ASSERT_EQUAL(i1 < i2, v1 < v2);
+    CPPUNIT_ASSERT_EQUAL(i1 > i2, v1 > v2);
+
+    i1.push_back(1);
+    i1.push_back(2);
+    i1.push_back(3);
+    v1.push_back(new int(1));
+    v1.push_back(new int(2));
+    v1.push_back(new int(3));
+    cout << "v1=" << v1 << endl;
+
+    i2.push_back(1);
+    i2.push_back(2);
+    i2.push_back(3);
+    v2.push_back(new int(1));
+    v2.push_back(new int(2));
+    v2.push_back(new int(3));
+    cout << "v2=" << v2 << endl;
+
+    CPPUNIT_ASSERT( !(v1 < v2) );
+    CPPUNIT_ASSERT( !(i1 < i2) );
+    CPPUNIT_ASSERT( !(v1 > v2) );
+    CPPUNIT_ASSERT( !(i1 > i2) );
+    CPPUNIT_ASSERT_EQUAL(i1 < i2, v1 < v2);
+    CPPUNIT_ASSERT_EQUAL(i1 > i2, v1 > v2);
+
+    i2.push_back(4);
+    v2.push_back(new int(4));
+    CPPUNIT_ASSERT(v1 < v2);
+    CPPUNIT_ASSERT(i1 < i2);
+    CPPUNIT_ASSERT(v2 > v1);
+    CPPUNIT_ASSERT(i2 > i1);
+
+    CPPUNIT_ASSERT_EQUAL(i1 < i2, v1 < v2);
+    CPPUNIT_ASSERT_EQUAL(i1 > i2, v1 > v2);
+  }
+
 
 public:
   static CppUnit::Test* suite()
@@ -880,8 +1033,12 @@ public:
     s->addTest(new CppUnit::TestCaller<Tests>("test_insert3", &Tests::test_insert3));
     s->addTest(new CppUnit::TestCaller<Tests>("test_insert4", &Tests::test_insert4));
     s->addTest(new CppUnit::TestCaller<Tests>("test_erase1", &Tests::test_erase1));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_erase2", &Tests::test_erase2));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_swap", &Tests::test_swap));
     s->addTest(new CppUnit::TestCaller<Tests>("test_pop1", &Tests::test_pop1));
     s->addTest(new CppUnit::TestCaller<Tests>("test_str", &Tests::test_str));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_eq", &Tests::test_eq));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_less", &Tests::test_less));
 
     return s;
   }
