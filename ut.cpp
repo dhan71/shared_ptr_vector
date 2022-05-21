@@ -847,6 +847,13 @@ public:
 
     CPPUNIT_ASSERT(0 == v1.size());
     CPPUNIT_ASSERT(5 == v2.size());
+
+    swap(v1, v2);
+    cout << "v1=" << v1 << endl;
+    cout << "v2=" << v2 << endl;
+
+    CPPUNIT_ASSERT(5 == v1.size());
+    CPPUNIT_ASSERT(0 == v2.size());
   }
 
   void test_pop1()
@@ -881,27 +888,6 @@ public:
     CPPUNIT_ASSERT(2 == v1.size());
     CPPUNIT_ASSERT_EQUAL(i2, v1.back().get());
     CPPUNIT_ASSERT_EQUAL(i2, v1.at(1).get());
-  }
-  void test_str()
-  {
-    title("test_str() called");
-    shared_ptr_vector<int> v1;
-    v1.push_back(new int(1));
-    v1.push_back(new int(2));
-    v1.push_back(new int(3));
-    string s = to_string(v1);
-    cout << "to_string(v1)=" << s << endl;
-    CPPUNIT_ASSERT("[ 1 2 3 ]" == s);
-
-    shared_ptr_vector<TObj> v2;
-    v2.push_back(new TObj(1, "A"));
-    v2.push_back(new TObj(2, "B"));
-    v2.push_back(new TObj(3, "C"));
-    s = to_string(v2);
-    cout << "to_string(v2)=" << s << endl;
-    CPPUNIT_ASSERT("[ (1,A) (2,B) (3,C) ]" == s);
-    cout << "v1=" << v1 << endl;
-    cout << "v2=" << v2 << endl;
   }
 
   void test_eq()
@@ -992,6 +978,30 @@ public:
     CPPUNIT_ASSERT_EQUAL(i1 > i2, v1 > v2);
   }
 
+  void test_str()
+  {
+    title("test_str() called");
+    shared_ptr_vector<int> v1;
+    v1.push_back(new int(1));
+    v1.push_back(new int(2));
+    v1.push_back(new int(3));
+    v1.push_back(nullptr);
+    string s = to_string(v1);
+    cout << "to_string(v1)=" << s << endl;
+    CPPUNIT_ASSERT("[ 1 2 3 NULL ]" == s);
+
+    shared_ptr_vector<TObj> v2;
+    v2.push_back(new TObj(1, "A"));
+    v2.push_back(new TObj(2, "B"));
+    v2.push_back(new TObj(3, "C"));
+    v2.push_back(nullptr);
+    s = to_string(v2);
+    cout << "to_string(v2)=" << s << endl;
+    CPPUNIT_ASSERT("[ (1,A) (2,B) (3,C) NULL ]" == s);
+    cout << "v1=" << v1 << endl;
+    cout << "v2=" << v2 << endl;
+  }
+
 
 public:
   static CppUnit::Test* suite()
@@ -1036,9 +1046,9 @@ public:
     s->addTest(new CppUnit::TestCaller<Tests>("test_erase2", &Tests::test_erase2));
     s->addTest(new CppUnit::TestCaller<Tests>("test_swap", &Tests::test_swap));
     s->addTest(new CppUnit::TestCaller<Tests>("test_pop1", &Tests::test_pop1));
-    s->addTest(new CppUnit::TestCaller<Tests>("test_str", &Tests::test_str));
     s->addTest(new CppUnit::TestCaller<Tests>("test_eq", &Tests::test_eq));
     s->addTest(new CppUnit::TestCaller<Tests>("test_less", &Tests::test_less));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_str", &Tests::test_str));
 
     return s;
   }

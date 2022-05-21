@@ -148,7 +148,11 @@ public:
    *  The contents of the moved instance are a valid, but unspecified
    *  shared_ptr_vector.
    */
-  shared_ptr_vector(shared_ptr_vector&&) noexcept = default;
+//shared_ptr_vector(shared_ptr_vector&&) noexcept = default;
+  shared_ptr_vector(shared_ptr_vector&& __x)
+  : iList(std::move(__x.iList))
+  {
+  }
 
   /// Copy constructor with alternative allocator
   shared_ptr_vector(const shared_ptr_vector& __x, const allocator_type& __a)
@@ -158,11 +162,12 @@ public:
   }
 
 public:
-///// Move constructor with alternative allocator
-//shared_ptr_vector(shared_ptr_vector&& __rv, const allocator_type& __m)
+  /// Move constructor with alternative allocator
+  shared_ptr_vector(shared_ptr_vector&& __rv, const allocator_type& __m)
 //noexcept( noexcept( shared_ptr_vector(std::declval<shared_ptr_vector&&>(), std::declval<const allocator_type&>(), std::declval<typename _Alloc_traits::is_always_equal>())) )
-//: shared_ptr_vector(std::move(__rv), __m, typename _Alloc_traits::is_always_equal{})
-//{ }
+  : iList(std::move(__rv.iList), __m)
+  {
+  }
 
   /**
    *  @brief  Builds a shared_ptr_vector from an initializer list.
@@ -256,7 +261,7 @@ public:
   operator=(shared_ptr_vector&& __x) //noexcept(_list_type::_Alloc_traits::_S_nothrow_move())
   {
     _OUT(" + operator=(const shared_ptr_vector&& __x) noexcept called");
-    iList = __x.iList;
+    iList = std::move(__x.iList);
     return *this;
   }
 
@@ -1037,6 +1042,8 @@ operator<(const shared_ptr_vector<_Tp, _Alloc>& __x, const shared_ptr_vector<_Tp
   {
     if ( (*xb->get() < *yb->get()) )
       return true;
+    if ( (*yb->get() < *xb->get()) )
+      return false;
   }
   if ( (xb == xe) && (yb == ye) )
     return false;
@@ -1069,60 +1076,59 @@ inline bool
 operator>=(const shared_ptr_vector<_Tp, _Alloc>& __x, const shared_ptr_vector<_Tp, _Alloc>& __y)
 { return !(__x < __y); }
 
-#if 0
 /// See std::shared_ptr_vector::swap().
 template<typename _Tp, typename _Alloc>
 inline void
 swap(shared_ptr_vector<_Tp, _Alloc>& __x, shared_ptr_vector<_Tp, _Alloc>& __y)
-_GLIBCXX_NOEXCEPT_IF(noexcept(__x.swap(__y)))
+//_GLIBCXX_NOEXCEPT_IF(noexcept(__x.swap(__y)))
 { __x.swap(__y); }
 
-_GLIBCXX_END_NAMESPACE_CONTAINER
 
-#if __cplusplus >= 201703L
-namespace __detail::__variant
-{
-template<typename> struct _Never_valueless_alt; // see <variant>
-
-// Provide the strong exception-safety guarantee when emplacing a
-// shared_ptr_vector into a variant, but only if move assignment cannot throw.
-template<typename _Tp, typename _Alloc>
-  struct _Never_valueless_alt<_GLIBCXX_STD_C::shared_ptr_vector<_Tp, _Alloc>>
-  : std::is_nothrow_move_assignable<_GLIBCXX_STD_C::shared_ptr_vector<_Tp, _Alloc>>
-  { };
-}  // namespace __detail::__variant
-#endif // C++17
-
-_GLIBCXX_END_NAMESPACE_VERSION
-} // namespace std
-#endif
-
-template <typename _Tp>
+/**
+*  @brief  convert the elements of the shared_ptr_vector to string.
+*  @param  __x  A shared_ptr_vector.
+*  @return  string representing shared_ptr_vector
+*
+*  This converts shared_ptr_vector to string.
+*  The elements must have << operation.
+*/
+template <typename _Tp, typename _Alloc>
 std::string
-to_string(const shared_ptr_vector<_Tp>& __x)
+to_string(const shared_ptr_vector<_Tp, _Alloc>& __x)
 {
   std::stringstream ss;
   ss << "[ ";
-//for (auto i = __x.begin(); i != __x.end(); ++i)
-  for (size_t i = 0; i < __x.size(); ++i)
+  for (auto i = __x.begin(); i != __x.end(); ++i)
   {
-//  ss << **i << " ";
-    ss << *(__x.at(i).get()) << " ";
+    if (*i)
+      ss << **i << " ";
+    else
+      ss << "NULL ";
   }
   ss << "]";
   return ss.str();
 }
 
-template <typename _Tp>
+/**
+*  @brief  output the elements of the shared_ptr_vector to ostream.
+*  @param  os   A output stream.
+*  @param  __x  A shared_ptr_vector.
+*  @return  os(input ostreeam)
+*
+*  This outpus the element of the shared_ptr_vector to ostream.
+*  The elements must have << operation.
+*/
+template <typename _Tp, typename _Alloc>
 std::ostream&
-operator<<(std::ostream& os, const shared_ptr_vector<_Tp>& __x)
+operator<<(std::ostream& os, const shared_ptr_vector<_Tp, _Alloc>& __x)
 {
   os << "[ ";
-//for (auto i = __x.begin(); i != __x.end(); ++i)
-  for (size_t i = 0; i < __x.size(); ++i)
+  for (auto i = __x.begin(); i != __x.end(); ++i)
   {
-//  ss << **i << " ";
-    os << *(__x.at(i).get()) << " ";
+    if (*i)
+      os << **i << " ";
+    else
+      os << "NULL ";
   }
   os << "]";
   return os;
