@@ -552,14 +552,32 @@ public:
     CPPUNIT_ASSERT_EQUAL(i2, v1.back().get());
     CPPUNIT_ASSERT_EQUAL(i2, v1.at(1).get());
   }
-  /* do not use emplace function
   void test_emplaceback1()
   {
     title("test_emplaceback1() called");
+    vector<TObj> v1;
+    v1.push_back(TObj(1,"A"));
+    v1.emplace_back(2,"B");
+    v1.emplace_back(3,"C");
+    for (auto i : v1)
+      cout << i << "\n";
+    cout << endl;
+
+    vector<int> v2;
+    v2.push_back(1);
+    v2.emplace_back(2);
+    v2.emplace_back(3);
+    for (auto i : v2)
+      cout << i << "\n";
+    cout << endl;
+  }
+  void test_emplaceback2()
+  {
+    title("test_emplaceback2() called");
+
     shared_ptr_vector<TObj> v1;
     CPPUNIT_ASSERT_EQUAL(true, v1.empty());
 
-    //TObj* t1 = new TObj(1,"A");
     v1.emplace_back(1, "A");
 
     CPPUNIT_ASSERT(1 == v1.size());
@@ -571,7 +589,7 @@ public:
     CPPUNIT_ASSERT(2 == v1.size());
     CPPUNIT_ASSERT_EQUAL(2, v1.back().get()->getN());
     CPPUNIT_ASSERT_EQUAL(string("B"), v1.back().get()->getS());
-  }*/
+  }
 
   void test_pop1()
   {
@@ -661,7 +679,8 @@ public:
     s->addTest(new CppUnit::TestCaller<Tests>("test_at2", &Tests::test_at2));
     s->addTest(new CppUnit::TestCaller<Tests>("test_push1", &Tests::test_push1));
     s->addTest(new CppUnit::TestCaller<Tests>("test_push2", &Tests::test_push2));
-//  s->addTest(new CppUnit::TestCaller<Tests>("test_emplaceback1", &Tests::test_emplaceback1));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_emplaceback1", &Tests::test_emplaceback1));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_emplaceback2", &Tests::test_emplaceback2));
     s->addTest(new CppUnit::TestCaller<Tests>("test_pop1", &Tests::test_pop1));
     s->addTest(new CppUnit::TestCaller<Tests>("test_str", &Tests::test_str));
 

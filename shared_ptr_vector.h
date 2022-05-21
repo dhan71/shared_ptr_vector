@@ -740,14 +740,18 @@ public:
     iList.push_back(shared_data_type( new value_type(__x) ));
   }
 
-/*template<typename... _Args>
-  reference
+//template<typename _Result, typename... _Args>
+//_Result*
+//_create_obj(_Args&&... args)
+//{
+//  return new _Result(args...);
+//}
+  template<typename... _Args>
+  void//reference
   emplace_back(_Args&&... __args)
   {
-//  return iList.emplace_back(__args...);
-    data_type __x = new data_type(__args...);
-    this->push_back(__x);
-  }*/
+    this->push_back(new _Tp(__args...));
+  }
 
   /**
    *  @brief  Removes last element.
