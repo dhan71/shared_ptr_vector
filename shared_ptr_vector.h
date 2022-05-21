@@ -740,17 +740,12 @@ public:
     iList.push_back(shared_data_type( new value_type(__x) ));
   }
 
-//template<typename _Result, typename... _Args>
-//_Result*
-//_create_obj(_Args&&... args)
-//{
-//  return new _Result(args...);
-//}
   template<typename... _Args>
-  void//reference
+  reference
   emplace_back(_Args&&... __args)
   {
     this->push_back(new _Tp(__args...));
+    return this->back();
   }
 
   /**
@@ -767,7 +762,8 @@ public:
   {
     iList.pop_back();
   }
-#if 0
+
+public:
   /**
    *  @brief  Inserts an object in shared_ptr_vector before specified iterator.
    *  @param  __position  A const_iterator into the shared_ptr_vector.
@@ -784,7 +780,8 @@ public:
   iterator
   emplace(const_iterator __position, _Args&&... __args)
   {
-    return iList.implace(__position, __args...);
+    //return iList.implace(__position, __args...);
+    return iList.insert(__position, shared_data_type(new _Tp(__args...)));
   }
 
   /**
@@ -799,9 +796,10 @@ public:
    *  used the user should consider using std::list.
    */
   iterator
-  insert(const_iterator __position, const value_type& __x)
+  insert(const_iterator __position, const data_type& __x)
   {
-    return iList.insert(__position, __x);
+    _OUT(" * insert(const_iterator __position, const data_type& __x) called");
+    return iList.insert(__position, shared_data_type(__x));
   }
 
   /**
@@ -816,9 +814,11 @@ public:
    *  used the user should consider using std::list.
    */
   iterator
-  insert(const_iterator __position, value_type&& __x)
+  insert(const_iterator __position, data_type&& __x)
   {
-    return iList.insert(__position, __x);
+    //return iList.insert(__position, __x);
+    _OUT(" * insert(const_iterator __position, value_type&& __x) called");
+    return iList.insert(__position, shared_data_type(__x));
   }
 
   /**
@@ -835,9 +835,9 @@ public:
    *  consider using std::list.
    */
   iterator
-  insert(const_iterator __position, initializer_list<value_type> __l)
+  insert(const_iterator __position, std::initializer_list<data_type> __l)
   {
-    return iList.insert(__position, __l);
+    return this->insert(__position, __l.begin(), __l.end());
   }
 
   /**
@@ -855,9 +855,9 @@ public:
    *  consider using std::list.
    */
   iterator
-  insert(const_iterator __position, size_type __n, const value_type& __x)
+  insert(const_iterator __position, size_type __n, const data_type& __x)
   {
-    return iList.insert(__position, __n, __x);
+    return iList.insert(__position, __n, shared_data_type(__x));
   }
 
   /**
@@ -879,9 +879,18 @@ public:
   iterator
   insert(const_iterator __position, _InputIterator __first, _InputIterator __last)
   {
-    return iList.insert(__position, __first, __last);
+    _OUT(" * insert(const_iterator __position, _InputIterator __first, _InputIterator __last) called");
+    //return iList.insert(__position, __first, __last);
+    difference_type d = end() - __position;
+    size_type n = std::distance(__first, __last);
+    resize(size() + n);
+    for (auto i = d; __first != __last; ++__first, ++i)
+    {
+      *(begin() + i) = shared_data_type(*__first);
+    }
+    return begin() + d;
   }
-
+#if 0
   /**
    *  @brief  Remove element at given position.
    *  @param  __position  Iterator pointing to element to be erased.
