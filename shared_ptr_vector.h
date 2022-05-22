@@ -36,7 +36,6 @@
 #include <ostream>
 #include <iostream>
 
-
 template<typename _Tp, typename _Alloc = std::allocator<std::shared_ptr<_Tp> > >
 class shared_ptr_vector
 {
@@ -974,6 +973,132 @@ public:
   clear()
   { iList.clear(); }
 
+public:
+  struct shared_ptr_data_equal
+  {
+    shared_ptr_data_equal(const data_type& __x)
+    : iData(__x)
+    { }
+
+    bool operator()(const shared_data_type& val) const
+    {
+      return iData == val.get();
+    }
+
+  private:
+    const data_type iData;
+  };
+  struct shared_ptr_value_equal
+  {
+    shared_ptr_value_equal(const value_type& __x)
+    : iData(__x)
+    { }
+
+    bool operator()(const shared_data_type& val) const
+    {
+      if (val.get())
+        return *val.get() == iData;
+      else
+        return false;
+    }
+
+  private:
+    const value_type iData;
+  };
+  /**
+   *  NULL is last element
+   */
+  struct shared_ptr_value_less
+  {
+    bool operator()(const shared_data_type& lhs, const shared_data_type& rhs) const
+    {
+      if (lhs.get() && rhs.get())
+        return *lhs.get() < *rhs.get();
+      else if (lhs.get())
+        return true;
+      else
+        return false;
+    }
+  };
+
+  /**
+   *  @brief  output the elements of the shared_ptr_vector to ostream.
+   *  @param  os   A output stream.
+   *  @param  __x  A shared_ptr_vector.
+   *  @return  os(input ostreeam)
+   *
+   *  This outpus the element of the shared_ptr_vector to ostream.
+   *  The elements must have << operation.
+   */
+  void
+  sort()
+  {
+   std::sort(begin(), end(), shared_ptr_value_less());
+  }
+
+  /*
+  template <typename _Cmp>
+  struct ElemCmp
+  {
+    bool operator()(const shared_data_type& lhs, const shared_data_type& rhs) const
+    {
+      return cmp(lhs.get(), rhs.get());
+    }
+  private:
+    _Cmp cmp;
+  }
+  template <typename _Cmp>
+  void
+  sort(_Cmp __c)
+  {
+   std::sort(begin(), end(), ElemCmp<_Cmp>());
+  }
+  */
+
+  /**
+   *  @brief  find the position where __x is.
+   *  @param  __x  A pointer
+   *  @return  iterator where __x is
+   *
+   */
+  iterator
+  find(const data_type& __x)
+  {
+    return std::find_if(begin(), end(), shared_ptr_data_equal(__x));
+  }
+  const_iterator
+  find(const data_type& __x) const
+  {
+    return std::find_if(begin(), end(), shared_ptr_data_equal(__x));
+  }
+
+  iterator
+  find_value(const value_type& __x)
+  {
+    return std::find_if(begin(), end(), shared_ptr_value_equal(__x));
+  }
+  const_iterator
+  find_value(const value_type& __x) const
+  {
+    return std::find_if(begin(), end(), shared_ptr_value_equal(__x));
+  }
+  iterator
+  find_value(const data_type& __x)
+  {
+    if (__x)
+      return std::find_if(begin(), end(), shared_ptr_value_equal(*__x));
+    else
+      return end();
+  }
+  const_iterator
+  find_value(const data_type& __x) const
+  {
+    if (__x)
+      return std::find_if(begin(), end(), shared_ptr_value_equal(*__x));
+    else
+      return end();
+  }
+
 private:
   _list_type iList;
 };
@@ -1133,6 +1258,24 @@ operator<<(std::ostream& os, const shared_ptr_vector<_Tp, _Alloc>& __x)
   os << "]";
   return os;
 }
+
+/**
+*  @brief  output the elements of the shared_ptr_vector to ostream.
+*  @param  os   A output stream.
+*  @param  __x  A shared_ptr_vector.
+*  @return  os(input ostreeam)
+*
+*  This outpus the element of the shared_ptr_vector to ostream.
+*  The elements must have << operation.
+*/
+template <typename _Tp, typename _Alloc>
+void
+sort(shared_ptr_vector<_Tp, _Alloc>& __x)
+{
+  typedef typename shared_ptr_vector<_Tp, _Alloc>::shared_ptr_value_less shared_ptr_value_less;
+  std::sort(__x.begin(), __x.end(), shared_ptr_value_less());
+}
+
 
 #endif /* _shared_ptr_vector_h_ */
 

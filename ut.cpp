@@ -49,11 +49,30 @@ private:
   int    iN;
   string iS;
 };
+bool
+operator==(const TObj& lhs, const TObj& rhs)
+{
+  return (lhs.getN() == rhs.getN()) &&
+         (lhs.getS() == rhs.getS()) ;
+}
+bool
+operator<(const TObj& lhs, const TObj& rhs)
+{
+  if (lhs.getN() < rhs.getN())
+    return true;
+  return lhs.getS() < rhs.getS();
+}
 ostream&
 operator<<(ostream& os, const TObj& a)
 {
   os << "(" << a.getN() << "," << a.getS() << ")";
   return os;
+}
+
+bool
+int_less(int a, int b)
+{
+  return a < b;
 }
 
 
@@ -1002,6 +1021,215 @@ public:
     cout << "v2=" << v2 << endl;
   }
 
+  void test_loop1()
+  {
+    title("test_loop1() called");
+
+    shared_ptr_vector<int> v1;
+    v1.push_back(new int(1));
+    v1.push_back(new int(2));
+    v1.push_back(nullptr);
+    v1.push_back(new int(3));
+    cout << "v1=" << v1 << endl;
+
+    for (auto p : v1)
+    {
+      if (p)
+        cout << *p << " ";
+      else
+        cout << "NULL ";
+    }
+    cout << endl;
+    for (auto i = v1.begin(); i != v1.end(); ++i)
+    {
+      if (*i)
+        cout << **i << " ";
+      else
+        cout << "NULL ";
+    }
+    cout << endl;
+    for (auto i = v1.begin(); i != v1.end(); ++i)
+    {
+      int* p = i->get();
+      if (p)
+        cout << *p << " ";
+      else
+        cout << "NULL ";
+    }
+    cout << endl;
+  }
+  void test_sort1()
+  {
+    title("test_sort1() called");
+
+    shared_ptr_vector<int> v1;
+    v1.push_back(new int(2));
+    v1.push_back(new int(5));
+    v1.push_back(new int(3));
+    v1.push_back(new int(1));
+    v1.push_back(new int(4));
+    cout << "before sort: v1=" << v1 << endl;
+
+    //sort(v1);
+    v1.sort();
+
+    cout << "after sort: v1=" << v1 << endl;
+    string sorted_v = to_string(v1);
+    CPPUNIT_ASSERT("[ 1 2 3 4 5 ]" == sorted_v);
+
+    TObj* t1 = new TObj(5,"H");
+    TObj* t2 = new TObj(2,"B");
+    TObj* t3 = new TObj(3,"C");
+    TObj* t4 = new TObj(3,"D");
+    TObj* t5 = new TObj(1,"A");
+    shared_ptr_vector<TObj> v2{t1,t2,t3,t4,t5};
+    cout << "before sort: v2=" << v2 << endl;
+    //sort(v2);
+    v2.sort();
+    cout << "after sort: v2=" << v2 << endl;
+  }
+  void test_sort2()
+  {
+    title("test_sort2() called");
+
+    shared_ptr_vector<int> v1;
+    v1.push_back(nullptr);
+    v1.push_back(new int(2));
+    v1.push_back(new int(5));
+    v1.push_back(new int(3));
+    v1.push_back(new int(1));
+    v1.push_back(new int(4));
+    cout << "before sort: v1=" << v1 << endl;
+
+    sort(v1);
+
+    cout << "after sort: v1=" << v1 << endl;
+    string sorted_v = to_string(v1);
+    CPPUNIT_ASSERT("[ 1 2 3 4 5 NULL ]" == sorted_v);
+
+    TObj* t1 = new TObj(5,"H");
+    TObj* t2 = new TObj(2,"B");
+    TObj* t3 = new TObj(3,"C");
+    TObj* t4 = new TObj(3,"D");
+    TObj* t5 = new TObj(1,"A");
+    TObj* t6 = nullptr;
+    shared_ptr_vector<TObj> v2{t6,t1,t2,t3,t4,t5};
+    cout << "before sort: v2=" << v2 << endl;
+    sort(v2);
+    cout << "after sort: v2=" << v2 << endl;
+  }
+  void test_sort3()
+  {
+    title("test_sort3() called");
+
+    shared_ptr_vector<int> v1;
+    v1.push_back(new int(2));
+    v1.push_back(new int(5));
+    v1.push_back(new int(3));
+    v1.push_back(new int(1));
+    v1.push_back(new int(4));
+    cout << "before sort: v1=" << v1 << endl;
+
+    v1.sort();
+
+    cout << "after sort: v1=" << v1 << endl;
+    string sorted_v = to_string(v1);
+    CPPUNIT_ASSERT("[ 1 2 3 4 5 ]" == sorted_v);
+
+    /*
+    TObj* t1 = new TObj(5,"H");
+    TObj* t2 = new TObj(2,"B");
+    TObj* t3 = new TObj(3,"C");
+    TObj* t4 = new TObj(3,"D");
+    TObj* t5 = new TObj(1,"A");
+    TObj* t6 = nullptr;
+    shared_ptr_vector<TObj> v2{t6,t1,t2,t3,t4,t5};
+    cout << "before sort: v2=" << v2 << endl;
+    sort(v2);
+    cout << "after sort: v2=" << v2 << endl;
+    */
+  }
+  void test_find1()
+  {
+    title("test_find1() called");
+
+    int* i1 = new int(1);
+    int* i2 = new int(2);
+    int* i3 = new int(3);
+    int* i4 = new int(4);
+    int* i5 = new int(5);
+    int* i6 = new int(6);
+
+    shared_ptr_vector<int> v1{i1,i2,i3,i4,i5};
+    cout << "v1=" << v1 << endl;
+
+    shared_ptr_vector<int>::iterator itr = v1.find(i3);
+    CPPUNIT_ASSERT(itr != v1.end());
+    CPPUNIT_ASSERT(itr == (v1.begin()+2));
+
+    itr = v1.find(i6);
+    CPPUNIT_ASSERT(itr == v1.end());
+
+    TObj* t1 = new TObj(1,"A");
+    TObj* t2 = new TObj(2,"B");
+    TObj* t3 = new TObj(3,"C");
+    TObj* t4 = new TObj(4,"D");
+    TObj* t5 = new TObj(5,"E");
+    TObj* t6 = new TObj(6,"F");
+    TObj* t7 = nullptr;
+    shared_ptr_vector<TObj> v2{t1,t2,t3,t4,t5,t7};
+    cout << "v2=" << v2 << endl;
+
+    shared_ptr_vector<TObj>::iterator itr2 = v2.find(t3);
+    CPPUNIT_ASSERT(itr2 != v2.end());
+    CPPUNIT_ASSERT(itr2 == (v2.begin()+2));
+
+    itr2 = v2.find(t6);
+    CPPUNIT_ASSERT(itr2 == v2.end());
+    itr2 = v2.find(nullptr);
+    CPPUNIT_ASSERT(itr2 == (v2.end()-1));
+  }
+  void test_find2()
+  {
+    title("test_find2() called");
+
+    int* i1 = new int(1);
+    int* i2 = new int(2);
+    int* i3 = new int(3);
+    int* i4 = new int(4);
+    int* i5 = new int(5);
+    int* i6 = new int(6);
+
+    shared_ptr_vector<int> v1{i1,i2,i3,i4,i5,nullptr};
+    cout << "v1=" << v1 << endl;
+
+    shared_ptr_vector<int>::iterator itr = v1.find_value(i3);
+    CPPUNIT_ASSERT(itr != v1.end());
+    CPPUNIT_ASSERT(itr == (v1.begin()+2));
+
+    itr = v1.find_value(i6);
+    CPPUNIT_ASSERT(itr == v1.end());
+    itr = v1.find_value(nullptr);
+    CPPUNIT_ASSERT(itr == v1.end());
+
+    TObj* t1 = new TObj(1,"A");
+    TObj* t2 = new TObj(2,"B");
+    TObj* t3 = new TObj(3,"C");
+    TObj* t4 = new TObj(4,"D");
+    TObj* t5 = new TObj(5,"E");
+    TObj* t6 = new TObj(6,"F");
+    shared_ptr_vector<TObj> v2{t1,t2,t3,t4,t5,nullptr};
+    cout << "v2=" << v2 << endl;
+
+    shared_ptr_vector<TObj>::iterator itr2 = v2.find_value(t3);
+    CPPUNIT_ASSERT(itr2 != v2.end());
+    CPPUNIT_ASSERT(itr2 == (v2.begin()+2));
+
+    itr2 = v2.find_value(t6);
+    CPPUNIT_ASSERT(itr2 == v2.end());
+    itr2 = v2.find_value(nullptr);
+    CPPUNIT_ASSERT(itr2 == v2.end());
+  }
 
 public:
   static CppUnit::Test* suite()
@@ -1049,6 +1277,12 @@ public:
     s->addTest(new CppUnit::TestCaller<Tests>("test_eq", &Tests::test_eq));
     s->addTest(new CppUnit::TestCaller<Tests>("test_less", &Tests::test_less));
     s->addTest(new CppUnit::TestCaller<Tests>("test_str", &Tests::test_str));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_loop1", &Tests::test_loop1));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_sort1", &Tests::test_sort1));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_sort2", &Tests::test_sort2));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_sort3", &Tests::test_sort3));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_find1", &Tests::test_find1));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_find2", &Tests::test_find2));
 
     return s;
   }
