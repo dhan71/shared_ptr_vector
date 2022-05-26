@@ -1100,6 +1100,9 @@ public:
   }
 
 private:
+  /**
+   * vector which contains shared_ptr
+   */
   _list_type iList;
 };
 
