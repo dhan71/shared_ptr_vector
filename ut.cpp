@@ -1230,6 +1230,69 @@ public:
     itr2 = v2.find_value(nullptr);
     CPPUNIT_ASSERT(itr2 == v2.end());
   }
+  void test_find3()
+  {
+    title("test_find3() called");
+
+    int* i1 = new int(1);
+    int* i2 = new int(2);
+    int* i3 = new int(3);
+    int* i4 = new int(4);
+    int* i5 = new int(5);
+    int* i6 = new int(6);
+
+    shared_ptr_vector<int> v1{i1,i2,nullptr,i3,i4,i5,i6};
+    cout << "v1=" << v1 << endl;
+
+    struct FindInt
+    {
+      FindInt(int a)
+        : __n(a)
+      { }
+      bool operator()(const int& a) const
+      {
+        return (a%__n) == 0;
+      }
+      private:
+      int __n;
+    };
+    //shared_ptr_vector<int>::iterator itr = v1.find_if_value(i3, [](const int& a){return (a%5) == 0;});
+    shared_ptr_vector<int>::iterator itr = v1.find_if_value(FindInt(5));
+    CPPUNIT_ASSERT(itr != v1.end());
+    CPPUNIT_ASSERT(**itr == 5);
+
+    itr = v1.find_if_value(FindInt(8));
+    CPPUNIT_ASSERT(itr == v1.end());
+
+    struct FindObj
+    {
+      FindObj(int a)
+        : __n(a)
+      { }
+      bool operator()(const TObj& a) const
+      {
+        return (a.getN()%__n) == 0;
+      }
+      private:
+      int __n;
+    };
+    TObj* t1 = new TObj(1,"A");
+    TObj* t2 = new TObj(2,"B");
+    TObj* t3 = new TObj(3,"C");
+    TObj* t4 = new TObj(4,"D");
+    TObj* t5 = new TObj(5,"E");
+    TObj* t6 = new TObj(6,"F");
+    shared_ptr_vector<TObj> v2{t1,t2,nullptr,t3,t4,t5,t6};
+    cout << "v2=" << v2 << endl;
+
+    shared_ptr_vector<TObj>::iterator itr2 = v2.find_if_value(FindObj(5));
+    CPPUNIT_ASSERT(itr2 != v2.end());
+    CPPUNIT_ASSERT((*itr2)->getN() == 5);
+    cout << "FindObj(5) : " << **itr2 << endl;
+
+    itr2 = v2.find_if_value(FindObj(8));
+    CPPUNIT_ASSERT(itr2 == v2.end());
+  }
 
 public:
   static CppUnit::Test* suite()
@@ -1283,6 +1346,7 @@ public:
     s->addTest(new CppUnit::TestCaller<Tests>("test_sort3", &Tests::test_sort3));
     s->addTest(new CppUnit::TestCaller<Tests>("test_find1", &Tests::test_find1));
     s->addTest(new CppUnit::TestCaller<Tests>("test_find2", &Tests::test_find2));
+    s->addTest(new CppUnit::TestCaller<Tests>("test_find3", &Tests::test_find3));
 
     return s;
   }

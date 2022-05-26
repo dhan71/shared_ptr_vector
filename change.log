@@ -1,6 +1,7 @@
 1.2: add find functions.
 - support finding based on values.
 - support finding based on pointers.
+- support finding based on compare objects.
 1.1: add sort functions.
 - supports sorting based on values.
 1.0: first release

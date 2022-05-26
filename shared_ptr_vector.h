@@ -1099,6 +1099,26 @@ public:
       return end();
   }
 
+  /**
+   *  @brief  find iterator where __c is true.
+   *  @param  __c  A compare object - compare values
+   *  @return  iterator where __c is true.
+   *
+   */
+  template <typename _Cmp>
+  iterator
+  find_if_value(const _Cmp& __c)
+  {
+    for (auto i = begin(); i != end(); ++i)
+    {
+      if (*i && __c(**i))
+      {
+        return i;
+      }
+    }
+    return end();
+  }
+
 private:
   /**
    * vector which contains shared_ptr
