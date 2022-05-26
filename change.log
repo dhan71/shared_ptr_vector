@@ -1,0 +1,5 @@
+1.1: add sort functions.
+- supports sorting based on values.
+1.0: first release
+- supports the existing vector functions.
+
