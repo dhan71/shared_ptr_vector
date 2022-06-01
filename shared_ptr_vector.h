@@ -40,25 +40,25 @@ template<typename _Tp, typename _Alloc = std::allocator<std::shared_ptr<_Tp> > >
 class shared_ptr_vector
 {
 public:
-  typedef std::vector<std::shared_ptr<_Tp>, _Alloc> _list_type;
+  typedef std::vector<std::shared_ptr<_Tp>, _Alloc> _vector_type;
 
   typedef _Tp                  value_type;
   typedef _Tp*                 data_type;
   typedef const _Tp*           const_data_type;
   typedef std::shared_ptr<_Tp> shared_data_type;
 
-  typedef typename _list_type::pointer                pointer;
-  typedef typename _list_type::const_pointer          const_pointer;
-  typedef typename _list_type::reference              reference;
-  typedef typename _list_type::const_reference        const_reference;
-  typedef typename _list_type::iterator               iterator;
-  typedef typename _list_type::const_iterator         const_iterator;
-  typedef typename _list_type::reverse_iterator       reverse_iterator;
-  typedef typename _list_type::const_reverse_iterator const_reverse_iterator;
+  typedef typename _vector_type::pointer                pointer;
+  typedef typename _vector_type::const_pointer          const_pointer;
+  typedef typename _vector_type::reference              reference;
+  typedef typename _vector_type::const_reference        const_reference;
+  typedef typename _vector_type::iterator               iterator;
+  typedef typename _vector_type::const_iterator         const_iterator;
+  typedef typename _vector_type::reverse_iterator       reverse_iterator;
+  typedef typename _vector_type::const_reverse_iterator const_reverse_iterator;
 
-  typedef typename _list_type::size_type       size_type;
-  typedef typename _list_type::difference_type difference_type;
-  typedef typename _list_type::allocator_type  allocator_type;
+  typedef typename _vector_type::size_type       size_type;
+  typedef typename _vector_type::difference_type difference_type;
+  typedef typename _vector_type::allocator_type  allocator_type;
 
   friend class Tests;
 
@@ -257,7 +257,7 @@ public:
    *  Whether the allocator is moved depends on the allocator traits.
    */
   shared_ptr_vector&
-  operator=(shared_ptr_vector&& __x) //noexcept(_list_type::_Alloc_traits::_S_nothrow_move())
+  operator=(shared_ptr_vector&& __x) //noexcept(_vector_type::_Alloc_traits::_S_nothrow_move())
   {
     _OUT(" + operator=(const shared_ptr_vector&& __x) noexcept called");
     iList = std::move(__x.iList);
@@ -1123,7 +1123,7 @@ private:
   /**
    * vector which contains shared_ptr
    */
-  _list_type iList;
+  _vector_type iList;
 };
 
 #if __cpp_deduction_guides >= 201606

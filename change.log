@@ -1,9 +1,9 @@
-1.2: add find functions.
+0.3: add find functions.
 - support finding based on values.
 - support finding based on pointers.
 - support finding based on compare objects.
-1.1: add sort functions.
+0.2: add sort functions.
 - supports sorting based on values.
-1.0: first release
+0.1: first release
 - supports the existing vector functions.
 
