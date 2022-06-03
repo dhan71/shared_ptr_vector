@@ -3,3 +3,5 @@ ut.o
 *.swp
 stl_vector.h
 x
+ref/
+bak/

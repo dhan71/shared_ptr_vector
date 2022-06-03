@@ -40,7 +40,7 @@ public:
   {
     return iS;
   }
-  void setS(int a)
+  void setS(const string& a)
   {
     iS = a;
   }
@@ -150,8 +150,8 @@ public:
     shared_ptr_vector<int> v1(3);
     CPPUNIT_ASSERT(3 == v1.size());
     CPPUNIT_ASSERT_EQUAL(false, v1.empty());
-    CPPUNIT_ASSERT(nullptr == v1.front().get());
-    CPPUNIT_ASSERT(nullptr == v1.back().get());
+    CPPUNIT_ASSERT(nullptr == v1.front());
+    CPPUNIT_ASSERT(nullptr == v1.back());
   }
   void test_ctor4()
   {
@@ -161,16 +161,16 @@ public:
     cout << "v1=" << v1 << endl;
     CPPUNIT_ASSERT(3 == v1.size());
     CPPUNIT_ASSERT_EQUAL(false, v1.empty());
-    CPPUNIT_ASSERT(i1 == v1.front().get());
-    CPPUNIT_ASSERT(i1 == v1.back().get());
+    CPPUNIT_ASSERT(i1 == v1.front());
+    CPPUNIT_ASSERT(i1 == v1.back());
 
     TObj* t1 = new TObj(3, "Three");
     shared_ptr_vector<TObj> v2(3, t1);
     cout << "v2=" << v2 << endl;
     CPPUNIT_ASSERT(3 == v2.size());
     CPPUNIT_ASSERT_EQUAL(false, v2.empty());
-    CPPUNIT_ASSERT(t1 == v2.front().get());
-    CPPUNIT_ASSERT(t1 == v2.back().get());
+    CPPUNIT_ASSERT(t1 == v2.front());
+    CPPUNIT_ASSERT(t1 == v2.back());
   }
   void test_ctor5()
   {
@@ -186,8 +186,8 @@ public:
 
     shared_ptr_vector<TObj> v2(v1);
     CPPUNIT_ASSERT_EQUAL(v1.size(), v2.size());
-    CPPUNIT_ASSERT(v1.front().get() == v2.front().get());
-    CPPUNIT_ASSERT(v1.back().get() == v2.back().get());
+    CPPUNIT_ASSERT(v1.front() == v2.front());
+    CPPUNIT_ASSERT(v1.back() == v2.back());
     cout << "v2=" << v1 << endl;
   }
   void test_ctor6()
@@ -202,8 +202,8 @@ public:
     cout << "v1.capacity=" << v1.capacity() << endl;
 
     CPPUNIT_ASSERT(3 == v1.size());
-    CPPUNIT_ASSERT(v1.front().get() == t1);
-    CPPUNIT_ASSERT(v1.back().get() == t3);
+    CPPUNIT_ASSERT(v1.front() == t1);
+    CPPUNIT_ASSERT(v1.back() == t3);
 
     TObj* t4 = new TObj(4,"D");
     TObj* t5 = new TObj(5,"E");
@@ -213,8 +213,8 @@ public:
     shared_ptr_vector<TObj> v2({t4, t5, t6, t7, t8});
     CPPUNIT_ASSERT(5 == v2.size());
     CPPUNIT_ASSERT(5 == v2.capacity());
-    CPPUNIT_ASSERT(v2.front().get() == t4);
-    CPPUNIT_ASSERT(v2.back().get() == t8);
+    CPPUNIT_ASSERT(v2.front() == t4);
+    CPPUNIT_ASSERT(v2.back() == t8);
   }
   void test_ctor7()
   {
@@ -232,8 +232,8 @@ public:
 
     CPPUNIT_ASSERT(5 == v1.size());
     CPPUNIT_ASSERT(5 == v1.capacity());
-    CPPUNIT_ASSERT(v1.front().get() == t1);
-    CPPUNIT_ASSERT(v1.back().get() == t5);
+    CPPUNIT_ASSERT(v1.front() == t1);
+    CPPUNIT_ASSERT(v1.back() == t5);
   }
 
   void test_assign1()
@@ -254,8 +254,8 @@ public:
     CPPUNIT_ASSERT_EQUAL(v1.size(), v2.size());
     CPPUNIT_ASSERT_EQUAL(v1.capacity(), v2.capacity());
     CPPUNIT_ASSERT(v1.capacity() == v2.capacity());
-    CPPUNIT_ASSERT(v1.front().get() == v2.front().get());
-    CPPUNIT_ASSERT(v1.back().get() == v2.back().get());
+    CPPUNIT_ASSERT(v1.front() == v2.front());
+    CPPUNIT_ASSERT(v1.back() == v2.back());
   }
   void test_assign2()
   {
@@ -272,8 +272,8 @@ public:
 
     CPPUNIT_ASSERT(5 == v2.size());
     CPPUNIT_ASSERT(5 == v2.capacity());
-    CPPUNIT_ASSERT(t1== v2.front().get());
-    CPPUNIT_ASSERT(t5 == v2.back().get());
+    CPPUNIT_ASSERT(t1== v2.front());
+    CPPUNIT_ASSERT(t5 == v2.back());
   }
   void test_assign3()
   {
@@ -290,10 +290,10 @@ public:
     cout << "v1=" << v1 << endl;
 
     CPPUNIT_ASSERT(il.size() == v1.size());
-    CPPUNIT_ASSERT(*il.begin() == v1.front().get());
-    CPPUNIT_ASSERT(*(il.end()-1) == v1.back().get());
-    CPPUNIT_ASSERT(t1 == v1.front().get());
-    CPPUNIT_ASSERT(t5 == v1.back().get());
+    CPPUNIT_ASSERT(*il.begin() == v1.front());
+    CPPUNIT_ASSERT(*(il.end()-1) == v1.back());
+    CPPUNIT_ASSERT(t1 == v1.front());
+    CPPUNIT_ASSERT(t5 == v1.back());
   }
   void test_assign4()
   {
@@ -305,8 +305,8 @@ public:
     cout << "v1=" << v1 << endl;
 
     CPPUNIT_ASSERT(5 == v1.size());
-    CPPUNIT_ASSERT(t1 == v1.front().get());
-    CPPUNIT_ASSERT(t1 == v1.back().get());
+    CPPUNIT_ASSERT(t1 == v1.front());
+    CPPUNIT_ASSERT(t1 == v1.back());
   }
   void test_assign5()
   {
@@ -323,10 +323,10 @@ public:
     cout << "v1=" << v1 << endl;
 
     CPPUNIT_ASSERT(il.size() == v1.size());
-    CPPUNIT_ASSERT(*il.begin() == v1.front().get());
-    CPPUNIT_ASSERT(*(il.end()-1) == v1.back().get());
-    CPPUNIT_ASSERT(t1 == v1.front().get());
-    CPPUNIT_ASSERT(t5 == v1.back().get());
+    CPPUNIT_ASSERT(*il.begin() == v1.front());
+    CPPUNIT_ASSERT(*(il.end()-1) == v1.back());
+    CPPUNIT_ASSERT(t1 == v1.front());
+    CPPUNIT_ASSERT(t5 == v1.back());
   }
   void test_assign6()
   {
@@ -343,10 +343,10 @@ public:
     cout << "v1=" << v1 << endl;
 
     CPPUNIT_ASSERT(il.size() == v1.size());
-    CPPUNIT_ASSERT(*il.begin() == v1.front().get());
-    CPPUNIT_ASSERT(*(il.end()-1) == v1.back().get());
-    CPPUNIT_ASSERT(t1 == v1.front().get());
-    CPPUNIT_ASSERT(t5 == v1.back().get());
+    CPPUNIT_ASSERT(*il.begin() == v1.front());
+    CPPUNIT_ASSERT(*(il.end()-1) == v1.back());
+    CPPUNIT_ASSERT(t1 == v1.front());
+    CPPUNIT_ASSERT(t5 == v1.back());
   }
   void test_begin1()
   {
@@ -361,8 +361,8 @@ public:
     cout << "v1=" << v1 << endl;
 
     CPPUNIT_ASSERT(5 == v1.size());
-    CPPUNIT_ASSERT(t1 == v1.front().get());
-    CPPUNIT_ASSERT(t5 == v1.back().get());
+    CPPUNIT_ASSERT(t1 == v1.front());
+    CPPUNIT_ASSERT(t5 == v1.back());
 
     CPPUNIT_ASSERT(t1 == v1.begin()->get());
   }
@@ -379,8 +379,8 @@ public:
     cout << "v1=" << v1 << endl;
 
     CPPUNIT_ASSERT(5 == v1.size());
-    CPPUNIT_ASSERT(t1 == v1.front().get());
-    CPPUNIT_ASSERT(t5 == v1.back().get());
+    CPPUNIT_ASSERT(t1 == v1.front());
+    CPPUNIT_ASSERT(t5 == v1.back());
 
     CPPUNIT_ASSERT(t5 == (v1.end()-1)->get());
   }
@@ -409,20 +409,20 @@ public:
 
     CPPUNIT_ASSERT(5 == v1.size());
     CPPUNIT_ASSERT(5 == v1.capacity());
-    CPPUNIT_ASSERT(t1 == v1.front().get());
-    CPPUNIT_ASSERT(t5 == v1.back().get());
+    CPPUNIT_ASSERT(t1 == v1.front());
+    CPPUNIT_ASSERT(t5 == v1.back());
 
     v1.resize(3);
     CPPUNIT_ASSERT(3 == v1.size());
     CPPUNIT_ASSERT(5 == v1.capacity());
-    CPPUNIT_ASSERT(t1 == v1.front().get());
-    CPPUNIT_ASSERT(t3 == v1.back().get());
+    CPPUNIT_ASSERT(t1 == v1.front());
+    CPPUNIT_ASSERT(t3 == v1.back());
 
     v1.resize(5);
     CPPUNIT_ASSERT(5 == v1.size());
     CPPUNIT_ASSERT(5 == v1.capacity());
-    CPPUNIT_ASSERT(t1 == v1.front().get());
-    CPPUNIT_ASSERT(nullptr == v1.back().get());
+    CPPUNIT_ASSERT(t1 == v1.front());
+    CPPUNIT_ASSERT(nullptr == v1.back());
   }
   void test_resize2()
   {
@@ -438,14 +438,14 @@ public:
 
     CPPUNIT_ASSERT(5 == v1.size());
     CPPUNIT_ASSERT(5 == v1.capacity());
-    CPPUNIT_ASSERT(t1 == v1.front().get());
-    CPPUNIT_ASSERT(t5 == v1.back().get());
+    CPPUNIT_ASSERT(t1 == v1.front());
+    CPPUNIT_ASSERT(t5 == v1.back());
 
     v1.resize(3);
     CPPUNIT_ASSERT(3 == v1.size());
     CPPUNIT_ASSERT(5 == v1.capacity());
-    CPPUNIT_ASSERT(t1 == v1.front().get());
-    CPPUNIT_ASSERT(t3 == v1.back().get());
+    CPPUNIT_ASSERT(t1 == v1.front());
+    CPPUNIT_ASSERT(t3 == v1.back());
 
     TObj* t6 = new TObj(6,"G");
     v1.resize(6, t6);
@@ -453,8 +453,8 @@ public:
     cout << "resize v1=" << v1 << endl;
     CPPUNIT_ASSERT(6 == v1.size());
     CPPUNIT_ASSERT(6 == v1.capacity());
-    CPPUNIT_ASSERT(t1 == v1.front().get());
-    CPPUNIT_ASSERT(t6 == v1.back().get());
+    CPPUNIT_ASSERT(t1 == v1.front());
+    CPPUNIT_ASSERT(t6 == v1.back());
   }
 
   void test_aat1()
@@ -470,11 +470,17 @@ public:
     cout << "v1=" << v1 << endl;
 
     CPPUNIT_ASSERT(5 == v1.size());
-    CPPUNIT_ASSERT(t1 == v1[0].get());
-    CPPUNIT_ASSERT(t2 == v1[1].get());
-    CPPUNIT_ASSERT(t3 == v1[2].get());
-    CPPUNIT_ASSERT(t4 == v1[3].get());
-    CPPUNIT_ASSERT(t5 == v1[4].get());
+    CPPUNIT_ASSERT(t1 == v1[0]);
+    CPPUNIT_ASSERT(t2 == v1[1]);
+    CPPUNIT_ASSERT(t3 == v1[2]);
+    CPPUNIT_ASSERT(t4 == v1[3]);
+    CPPUNIT_ASSERT(t5 == v1[4]);
+
+    TObj* tt1 = v1[0];
+    cout << " tt1=" << *tt1 << endl;
+    tt1->setS("X");
+    tt1->setN(100);
+    cout << " tt1=" << *tt1 << endl;
   }
   void test_aat2()
   {
@@ -490,15 +496,15 @@ public:
     cout << "v1=" << v1 << endl;
 
     CPPUNIT_ASSERT(5 == v1.size());
-    CPPUNIT_ASSERT(t1 == v1[0].get());
-    CPPUNIT_ASSERT(t2 == v1[1].get());
-    CPPUNIT_ASSERT(t3 == v1[2].get());
-    CPPUNIT_ASSERT(t4 == v1[3].get());
-    CPPUNIT_ASSERT(t5 == v1[4].get());
+    CPPUNIT_ASSERT(t1 == v1[0]);
+    CPPUNIT_ASSERT(t2 == v1[1]);
+    CPPUNIT_ASSERT(t3 == v1[2]);
+    CPPUNIT_ASSERT(t4 == v1[3]);
+    CPPUNIT_ASSERT(t5 == v1[4]);
 
-    v1[4] = shared_ptr_vector<TObj>::shared_data_type(t6);
+    v1.at(4, t6);
     cout << "v1=" << v1 << endl;
-    CPPUNIT_ASSERT(t6 == v1[4].get());
+    CPPUNIT_ASSERT(t6 == v1[4]);
   }
   void test_at1()
   {
@@ -513,11 +519,11 @@ public:
     cout << "v1=" << v1 << endl;
 
     CPPUNIT_ASSERT(5 == v1.size());
-    CPPUNIT_ASSERT(t1 == v1.at(0).get());
-    CPPUNIT_ASSERT(t2 == v1.at(1).get());
-    CPPUNIT_ASSERT(t3 == v1.at(2).get());
-    CPPUNIT_ASSERT(t4 == v1.at(3).get());
-    CPPUNIT_ASSERT(t5 == v1.at(4).get());
+    CPPUNIT_ASSERT(t1 == v1.at(0));
+    CPPUNIT_ASSERT(t2 == v1.at(1));
+    CPPUNIT_ASSERT(t3 == v1.at(2));
+    CPPUNIT_ASSERT(t4 == v1.at(3));
+    CPPUNIT_ASSERT(t5 == v1.at(4));
   }
   void test_at2()
   {
@@ -533,15 +539,15 @@ public:
     cout << "v1=" << v1 << endl;
 
     CPPUNIT_ASSERT(5 == v1.size());
-    CPPUNIT_ASSERT(t1 == v1.at(0).get());
-    CPPUNIT_ASSERT(t2 == v1.at(1).get());
-    CPPUNIT_ASSERT(t3 == v1.at(2).get());
-    CPPUNIT_ASSERT(t4 == v1.at(3).get());
-    CPPUNIT_ASSERT(t5 == v1.at(4).get());
+    CPPUNIT_ASSERT(t1 == v1.at(0));
+    CPPUNIT_ASSERT(t2 == v1.at(1));
+    CPPUNIT_ASSERT(t3 == v1.at(2));
+    CPPUNIT_ASSERT(t4 == v1.at(3));
+    CPPUNIT_ASSERT(t5 == v1.at(4));
 
     v1.at(4, t6);
     cout << "v1=" << v1 << endl;
-    CPPUNIT_ASSERT(t6 == v1.at(4).get());
+    CPPUNIT_ASSERT(t6 == v1.at(4));
   }
 
   void test_push1()
@@ -562,14 +568,14 @@ public:
     v1.push_back(i1);
     CPPUNIT_ASSERT(1 == v1.size());
     CPPUNIT_ASSERT_EQUAL(false, v1.empty());
-    CPPUNIT_ASSERT_EQUAL(i1, v1.front().get());
-    CPPUNIT_ASSERT_EQUAL(i1, v1.back().get());
-    CPPUNIT_ASSERT_EQUAL(i1, v1.at(0).get());
+    CPPUNIT_ASSERT_EQUAL(i1, v1.front());
+    CPPUNIT_ASSERT_EQUAL(i1, v1.back());
+    CPPUNIT_ASSERT(i1 == v1.at(0));
     int* i2 = new int(2);
     v1.push_back(i2);
     CPPUNIT_ASSERT(2 == v1.size());
-    CPPUNIT_ASSERT_EQUAL(i2, v1.back().get());
-    CPPUNIT_ASSERT_EQUAL(i2, v1.at(1).get());
+    CPPUNIT_ASSERT_EQUAL(i2, v1.back());
+    CPPUNIT_ASSERT(i2 == v1.at(1));
   }
   void test_emplaceback1()
   {
@@ -597,18 +603,18 @@ public:
     shared_ptr_vector<TObj> v1;
     CPPUNIT_ASSERT_EQUAL(true, v1.empty());
 
-    shared_ptr<TObj> r = v1.emplace_back(1, "A");
-    cout << "r = " << *(r.get()) << endl;
+    TObj* r = v1.emplace_back(1, "A");
+    cout << "r = " << *r << endl;
 
     CPPUNIT_ASSERT(1 == v1.size());
     CPPUNIT_ASSERT_EQUAL(false, v1.empty());
-    CPPUNIT_ASSERT_EQUAL(1, v1.front().get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("A"), v1.front().get()->getS());
+    CPPUNIT_ASSERT_EQUAL(1, v1.front()->getN());
+    CPPUNIT_ASSERT_EQUAL(string("A"), v1.front()->getS());
 
     v1.emplace_back(2, "B");
     CPPUNIT_ASSERT(2 == v1.size());
-    CPPUNIT_ASSERT_EQUAL(2, v1.back().get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("B"), v1.back().get()->getS());
+    CPPUNIT_ASSERT_EQUAL(2, v1.back()->getN());
+    CPPUNIT_ASSERT_EQUAL(string("B"), v1.back()->getS());
   }
   void test_emplace1()
   {
@@ -617,27 +623,27 @@ public:
     shared_ptr_vector<TObj> v1;
     CPPUNIT_ASSERT_EQUAL(true, v1.empty());
 
-    shared_ptr<TObj> r = v1.emplace_back(1, "A");
-    cout << "r = " << *(r.get()) << endl;
+    TObj* r = v1.emplace_back(1, "A");
+    cout << "r = " << *r << endl;
 
     CPPUNIT_ASSERT(1 == v1.size());
     CPPUNIT_ASSERT_EQUAL(false, v1.empty());
-    CPPUNIT_ASSERT_EQUAL(1, v1.front().get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("A"), v1.front().get()->getS());
-    CPPUNIT_ASSERT_EQUAL(1, r.get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("A"), r.get()->getS());
+    CPPUNIT_ASSERT_EQUAL(1, v1.front()->getN());
+    CPPUNIT_ASSERT_EQUAL(string("A"), v1.front()->getS());
+    CPPUNIT_ASSERT_EQUAL(1, r->getN());
+    CPPUNIT_ASSERT_EQUAL(string("A"), r->getS());
 
     shared_ptr_vector<TObj>::iterator itr = v1.emplace(v1.begin(), 2, "B");
     CPPUNIT_ASSERT(2 == v1.size());
-    CPPUNIT_ASSERT_EQUAL(2, v1.front().get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("B"), v1.front().get()->getS());
+    CPPUNIT_ASSERT_EQUAL(2, v1.front()->getN());
+    CPPUNIT_ASSERT_EQUAL(string("B"), v1.front()->getS());
     CPPUNIT_ASSERT_EQUAL(2, itr->get()->getN());
     CPPUNIT_ASSERT_EQUAL(string("B"), itr->get()->getS());
 
     itr = v1.emplace(v1.end(), 3, "C");
     CPPUNIT_ASSERT(3 == v1.size());
-    CPPUNIT_ASSERT_EQUAL(3, v1.back().get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("C"), v1.back().get()->getS());
+    CPPUNIT_ASSERT_EQUAL(3, v1.back()->getN());
+    CPPUNIT_ASSERT_EQUAL(string("C"), v1.back()->getS());
     CPPUNIT_ASSERT_EQUAL(3, itr->get()->getN());
     CPPUNIT_ASSERT_EQUAL(string("C"), itr->get()->getS());
   }
@@ -657,24 +663,24 @@ public:
     CPPUNIT_ASSERT(1 == v1.size());
     CPPUNIT_ASSERT_EQUAL(false, v1.empty());
     CPPUNIT_ASSERT_EQUAL(t1, itr->get());
-    CPPUNIT_ASSERT_EQUAL(1, v1.front().get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("A"), v1.front().get()->getS());
+    CPPUNIT_ASSERT_EQUAL(1, v1.front()->getN());
+    CPPUNIT_ASSERT_EQUAL(string("A"), v1.front()->getS());
     CPPUNIT_ASSERT_EQUAL(1, itr->get()->getN());
     CPPUNIT_ASSERT_EQUAL(string("A"), itr->get()->getS());
 
     itr = v1.insert(v1.begin(), t2);
     CPPUNIT_ASSERT(2 == v1.size());
     CPPUNIT_ASSERT_EQUAL(t2, itr->get());
-    CPPUNIT_ASSERT_EQUAL(2, v1.front().get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("B"), v1.front().get()->getS());
+    CPPUNIT_ASSERT_EQUAL(2, v1.front()->getN());
+    CPPUNIT_ASSERT_EQUAL(string("B"), v1.front()->getS());
     CPPUNIT_ASSERT_EQUAL(2, itr->get()->getN());
     CPPUNIT_ASSERT_EQUAL(string("B"), itr->get()->getS());
 
     itr = v1.insert(v1.end(), t3);
     CPPUNIT_ASSERT(3 == v1.size());
     CPPUNIT_ASSERT_EQUAL(t3, itr->get());
-    CPPUNIT_ASSERT_EQUAL(3, v1.back().get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("C"), v1.back().get()->getS());
+    CPPUNIT_ASSERT_EQUAL(3, v1.back()->getN());
+    CPPUNIT_ASSERT_EQUAL(string("C"), v1.back()->getS());
     CPPUNIT_ASSERT_EQUAL(3, itr->get()->getN());
     CPPUNIT_ASSERT_EQUAL(string("C"), itr->get()->getS());
   }
@@ -693,22 +699,22 @@ public:
 
     CPPUNIT_ASSERT(1 == v1.size());
     CPPUNIT_ASSERT_EQUAL(false, v1.empty());
-    CPPUNIT_ASSERT_EQUAL(1, v1.front().get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("A"), v1.front().get()->getS());
+    CPPUNIT_ASSERT_EQUAL(1, v1.front()->getN());
+    CPPUNIT_ASSERT_EQUAL(string("A"), v1.front()->getS());
     CPPUNIT_ASSERT_EQUAL(1, itr->get()->getN());
     CPPUNIT_ASSERT_EQUAL(string("A"), itr->get()->getS());
 
     itr = v1.insert(v1.begin(), new TObj(2,"B"));
     CPPUNIT_ASSERT(2 == v1.size());
-    CPPUNIT_ASSERT_EQUAL(2, v1.front().get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("B"), v1.front().get()->getS());
+    CPPUNIT_ASSERT_EQUAL(2, v1.front()->getN());
+    CPPUNIT_ASSERT_EQUAL(string("B"), v1.front()->getS());
     CPPUNIT_ASSERT_EQUAL(2, itr->get()->getN());
     CPPUNIT_ASSERT_EQUAL(string("B"), itr->get()->getS());
 
     itr = v1.insert(v1.end(), new TObj(3,"C"));
     CPPUNIT_ASSERT(3 == v1.size());
-    CPPUNIT_ASSERT_EQUAL(3, v1.back().get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("C"), v1.back().get()->getS());
+    CPPUNIT_ASSERT_EQUAL(3, v1.back()->getN());
+    CPPUNIT_ASSERT_EQUAL(string("C"), v1.back()->getS());
     CPPUNIT_ASSERT_EQUAL(3, itr->get()->getN());
     CPPUNIT_ASSERT_EQUAL(string("C"), itr->get()->getS());
   }
@@ -733,8 +739,8 @@ public:
     CPPUNIT_ASSERT_EQUAL(false, v1.empty());
     CPPUNIT_ASSERT(itr == v1.begin());
     CPPUNIT_ASSERT_EQUAL(t1, itr->get());
-    CPPUNIT_ASSERT_EQUAL(1, v1.front().get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("A"), v1.front().get()->getS());
+    CPPUNIT_ASSERT_EQUAL(1, v1.front()->getN());
+    CPPUNIT_ASSERT_EQUAL(string("A"), v1.front()->getS());
     CPPUNIT_ASSERT_EQUAL(1, itr->get()->getN());
     CPPUNIT_ASSERT_EQUAL(string("A"), itr->get()->getS());
   }
@@ -756,16 +762,16 @@ public:
     CPPUNIT_ASSERT(3 == v1.size());
     CPPUNIT_ASSERT(itr == v1.begin());
     CPPUNIT_ASSERT_EQUAL(t1, itr->get());
-    CPPUNIT_ASSERT_EQUAL(1, v1.front().get()->getN());
-    CPPUNIT_ASSERT_EQUAL(string("A"), v1.front().get()->getS());
+    CPPUNIT_ASSERT_EQUAL(1, v1.front()->getN());
+    CPPUNIT_ASSERT_EQUAL(string("A"), v1.front()->getS());
     CPPUNIT_ASSERT_EQUAL(1, itr->get()->getN());
     CPPUNIT_ASSERT_EQUAL(string("A"), itr->get()->getS());
-    CPPUNIT_ASSERT_EQUAL(v1[0].get(), v1[1].get());
+    CPPUNIT_ASSERT_EQUAL(v1[0], v1[1]);
 
     itr = v1.insert(v1.end(), 3, t2);
     CPPUNIT_ASSERT(itr == (v1.begin() + 3));
-    CPPUNIT_ASSERT_EQUAL(t2, v1[4].get());
-    CPPUNIT_ASSERT_EQUAL(v1[3].get(), v1[4].get());
+    CPPUNIT_ASSERT(t2 == v1[4]);
+    CPPUNIT_ASSERT_EQUAL(v1[3], v1[4]);
   }
   void test_erase1()
   {
@@ -885,28 +891,28 @@ public:
     v1.push_back(i1);
     CPPUNIT_ASSERT(1 == v1.size());
     CPPUNIT_ASSERT_EQUAL(false, v1.empty());
-    CPPUNIT_ASSERT_EQUAL(i1, v1.front().get());
-    CPPUNIT_ASSERT_EQUAL(i1, v1.back().get());
-    CPPUNIT_ASSERT_EQUAL(i1, v1.at(0).get());
+    CPPUNIT_ASSERT_EQUAL(i1, v1.front());
+    CPPUNIT_ASSERT_EQUAL(i1, v1.back());
+    CPPUNIT_ASSERT(i1 == v1.at(0));
 
     int* i2 = new int(2);
     v1.push_back(i2);
     CPPUNIT_ASSERT(2 == v1.size());
-    CPPUNIT_ASSERT_EQUAL(i2, v1.back().get());
-    CPPUNIT_ASSERT_EQUAL(i2, v1.at(1).get());
+    CPPUNIT_ASSERT_EQUAL(i2, v1.back());
+    CPPUNIT_ASSERT(i2 == v1.at(1));
 
     int* i3 = new int(3);
     v1.push_back(i3);
     CPPUNIT_ASSERT(3 == v1.size());
-    CPPUNIT_ASSERT_EQUAL(i3, v1.back().get());
-    CPPUNIT_ASSERT_EQUAL(i3, v1.at(2).get());
+    CPPUNIT_ASSERT_EQUAL(i3, v1.back());
+    CPPUNIT_ASSERT(i3 == v1.at(2));
 
-    int* r_i3 = v1.back().get();
+    int* r_i3 = v1.back();
     CPPUNIT_ASSERT_EQUAL(i3, r_i3);
     v1.pop_back();
     CPPUNIT_ASSERT(2 == v1.size());
-    CPPUNIT_ASSERT_EQUAL(i2, v1.back().get());
-    CPPUNIT_ASSERT_EQUAL(i2, v1.at(1).get());
+    CPPUNIT_ASSERT_EQUAL(i2, v1.back());
+    CPPUNIT_ASSERT(i2 == v1.at(1));
   }
 
   void test_eq()
@@ -1294,6 +1300,35 @@ public:
     CPPUNIT_ASSERT(itr2 == v2.end());
   }
 
+  template<typename IteratorType>
+  void iteratorTraitsTest(IteratorType it)
+  {
+    typename std::iterator_traits<IteratorType>::value_type temp = *it;
+    std::cout << temp << std::endl;
+  }
+
+  void test_iter1()
+  {
+    title("test_iter1() called");
+
+    vector<int> v1{1,2,3};
+    Tests::iteratorTraitsTest(v1.begin());
+
+    int* i3 = new int(3);
+    int* i2 = new int(2);
+    int* i1 = new int(1);
+    shared_ptr_vector<int> v2 { i3, i2, i1 };
+    Tests::iteratorTraitsTest(v2.begin());
+
+    std::sort(v2.begin(), v2.end());
+    cout << "v2 = " << v2 << endl;
+
+    bool r = (v2.begin()+0) < (v2.begin() + 1);
+    cout << " (v2.begin()+0) < (v2.begin() + 1):" << r << endl;
+    r = (v2.begin()+1) < (v2.begin() + 0);
+    cout << " (v2.begin()+1) < (v2.begin() + 0):" << r << endl;
+  }
+
 public:
   static CppUnit::Test* suite()
   {
@@ -1347,6 +1382,8 @@ public:
     s->addTest(new CppUnit::TestCaller<Tests>("test_find1", &Tests::test_find1));
     s->addTest(new CppUnit::TestCaller<Tests>("test_find2", &Tests::test_find2));
     s->addTest(new CppUnit::TestCaller<Tests>("test_find3", &Tests::test_find3));
+
+    s->addTest(new CppUnit::TestCaller<Tests>("test_iter1", &Tests::test_iter1));
 
     return s;
   }

@@ -27,14 +27,17 @@ VPATH    = .
 .cpp.o:
 	$(CXX) $(CXXFLAGS) -c $<
 
-exe : ut
+exe : ut ut2
 
 all : exe
 clean:
 	/bin/rm -f *o
-	/bin/rm -f ut
+	/bin/rm -f ut ut2
 
 
 ut : ut.o
+	$(CCC) $(LDOPTIONS) -o $@ $? $(LDFLAGS)
+
+ut2 : ut2.o
 	$(CCC) $(LDOPTIONS) -o $@ $? $(LDFLAGS)
 

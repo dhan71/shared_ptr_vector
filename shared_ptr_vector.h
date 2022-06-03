@@ -47,10 +47,13 @@ public:
   typedef const _Tp*           const_data_type;
   typedef std::shared_ptr<_Tp> shared_data_type;
 
-  typedef typename _vector_type::pointer                pointer;
-  typedef typename _vector_type::const_pointer          const_pointer;
-  typedef typename _vector_type::reference              reference;
-  typedef typename _vector_type::const_reference        const_reference;
+//typedef typename _vector_type::pointer                pointer;
+//typedef typename _vector_type::const_pointer          const_pointer;
+//typedef typename _vector_type::reference              reference;
+//typedef typename _vector_type::const_reference        const_reference;
+  typedef data_type                                     reference;
+  typedef const_data_type                               const_reference;
+
   typedef typename _vector_type::iterator               iterator;
   typedef typename _vector_type::const_iterator         const_iterator;
   typedef typename _vector_type::reverse_iterator       reverse_iterator;
@@ -593,7 +596,7 @@ public:
   reference
   operator[](size_type __n)
   {
-    return iList[__n];
+    return iList[__n].get();
   }
 
   /**
@@ -610,7 +613,7 @@ public:
   const_reference
   operator[](size_type __n) const
   {
-    return iList[__n];
+    return iList[__n].get();
   }
 
 public:
@@ -628,13 +631,13 @@ public:
   reference
   at(size_type __n)
   {
-    return iList.at(__n);
+    return iList.at(__n).get();
   }
   reference
   at(size_type __n, const data_type& __x)
   {
     iList.at(__n) = shared_data_type(__x);
-    return iList.at(__n);
+    return iList.at(__n).get();
   }
 
   /**
@@ -651,7 +654,7 @@ public:
   const_reference
   at(size_type __n) const
   {
-    return iList.at(__n);
+    return iList.at(__n).get();
   }
 
   /**
@@ -661,7 +664,7 @@ public:
   reference
   front()
   {
-    return iList.front();
+    return iList.front().get();
   }
 
   /**
@@ -671,7 +674,7 @@ public:
   const_reference
   front() const
   {
-    return iList.front();
+    return iList.front().get();
   }
 
   /**
@@ -681,7 +684,7 @@ public:
   reference
   back()
   {
-    return iList.back();
+    return iList.back().get();
   }
 
   /**
@@ -691,7 +694,7 @@ public:
   const_reference
   back() const
   {
-    return iList.back();
+    return iList.back().get();
   }
 
   // _GLIBCXX_RESOLVE_LIB_DEFECTS
